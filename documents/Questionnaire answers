@@ -1,0 +1,86 @@
+1.	What are your biggest issues regarding your company that you plan to resolve with this particular app?
+The whole thing that we want with the app is that marketing and event planning is a really really big job. 
+Especially with tons of people trying to take care of a ton of issues. Event planning is volatile and gets 
+crazy so we want something that’ll manage that as much as possible. A big goal is organization and keeping 
+everyone on the same page. Also for the team to know if they need to contact someone from another team they 
+can find out who they need to contact quickly. 
+
+2.	Can you explain in detail the time-conflict detection feature? What are some examples of the time-conflict feature in a typical event?
+For small events you probably won’t have much problems in terms of time conflict. 
+Everything will be pretty linear. For huge events you will have tons of events going 
+on at the same time and it will need to deal with when things are starting and where 
+things are happening. For example, in room 20 someone already scheduled an event 
+from 8-9 so you cannot schedule something on that time. A popup would be the best 
+way to handle it. Basically a time conflict should prevent someone from scheduling 
+an event if it is already taken. 
+
+3.	What are some specific details you would like to see implemented in the Event Schedule feature?
+The big thing is for simple events you don’t have to do much but for huge events you need the 
+ability to create a chart that can schedule multiple things at multiple times but denote different locations. 
+The time conflict will only happen if they are in the same location but allow same timed events 
+if in different locations. Basically having the time and location plus some details like name of 
+event and short description. So basic necessities.
+
+4.	For the SMS Chat system, does this feature need to implement any advanced features besides basic text chat? File or document transfer? Event Schedule cooperation?
+SMS Chat: basic text is required. Advanced features is purely optional. 
+Can you use their phone number and then redirect to an SMS app?
+It would be preferable to have it in the app but if you all need to pawn that off on another app that’s fine. 
+Whatever works best.
+
+5.	What does “optional and editable” mean when the Event Manager or Event Manager Assistant enters in the basic team information?
+A lot of times when people make an account in apps you have to have at least a username and password 
+and put basic information like your name. A team name is also necessary but everything else should 
+be editable because planning events is all volatile and things can change very fast. So they have to 
+be able to change that instantly. 
+
+6.	In terms of the Event Schedule feature, what are all of the different types of schedule entries a user can create? (Occasions, new events, etc.) 
+Each event will have its own schedule. Let’s say the company has two event planners so one 
+person is handed a convention event and the other is handed a baby shower. Since they are completely 
+separate they each will have their own schedule so if you want to have a category selection when you’re 
+signing up an event that would be good but it isn’t necessary for time crunch. Them putting the event 
+name, time, location, and descriptions should be enough information but category idea would be nice. 
+
+So each event will have its own schedule as well as each employee? 
+Yes
+
+So each event has a calendar and each manager will have theirs? 
+Those two I would think of them separately. The schedule for employees is more like a work schedules 
+like “these are the times I have available, or I can work the event.” So the company will have their 
+own work schedule that is separate from the event planning schedule that the employees will use. The 
+employee schedule is more like when you’re working and when you can work. 
+
+Who are the ones that can change the event schedule? 
+That is going to be set in permission. If it is a small event the event manager is probably 
+is going to handle it. If you are doing a huge convention he will probably want the event manager 
+plus the team supervisors to be able to handle it so it is basically just a permission system that 
+the event manager can select permissions for who to handle what
+
+7.	Can you explain in detail the hierarchy of your company from HR to General Employees?
+So HR is basically to the left of all this. They are just there to handle hiring and firing employees. 
+They are not there to effect the event in any way. They are there to add and delete employee accounts. 
+Then when you make the event you have the Event manager at the top and then his assistant and they’re 
+pretty much the same except for a few things that were listed since the Event manger deals with everything. 
+
+8.	What is the difference between how General Employees and Team Members can access the app in terms of what they can and cannot view?
+They’ll be pretty similar. It comes down to an organization idea. So the manager when he firsts gets 
+the event will be able to add 10 employees to the event. But we don’t want to go through and make him 
+choose right then and there who will be the team supervisor and etc. So that’ll be the general employees. 
+Then he can further divide everyone into whatever the team needs. If he has a team that’s doing 
+catering and food and the other is doing games then it isn’t a big deal if one team can view the other 
+teams schedule but they shouldn’t need to. So the permission system can be implemented last or step by step.
+
+9.	Should the General Employees only have access to their own personal work schedule?
+Yes. Everyone should also be able to view the event schedule. As far as who can edit it should be the permissions thing.
+
+10.	Should employees receive an email or text message whenever they experience a change in their current company role?
+Yes, at least a notification. However you want to do that. You can make it send a popup to a teammate 
+notifying them that they’re part of this team or removed from a team. 
+
+When you are making an event scheduler how exactly will the conflicts work? 
+The event scheduler is just an itinerary for the event. The conflict occurs when you are 
+planning the event and you have 20 different teams scheduling events you will have people 
+accidently putting events in the same location at the same time. When you are planning event 
+you just can’t have sub events being planned at the same time. There should not be a time 
+conflict for employees work schedules and event schedule times. Every employee has their own 
+personal calendar just for them, and every event has a calendar and just want to prevent time 
+conflicts on that calendar. 
