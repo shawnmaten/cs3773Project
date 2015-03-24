@@ -1,0 +1,18 @@
+1.	So the whole thing we want with the app is that marking and event panning is like a really big job especially when you have a ton of people doing a ton of different things. Also event planning is volatile, so event planning gets crazy, we want something to manage that event planning as much as possible. Organization of all the employees on other peoples schedules. Organization, keeping everyone on the same page. If people need to they can find out who they need to talk to really fast. 
+2.	For the schedule. For small events conflicts aren’t much of a problem, It should give them the ability to fix overlaps. It should give them a change to fix it or cancel it. A popup would be fine (best). 
+3.	The big thing is simple events aren’t much of an issue. But for big events the ability to , (I guess its going to be more like a chart for different events in different locations). Having the time, location, title of what’s going on (summary/description).
+4.	It’ll be basic text. Advance features are nice but for the project just basic is fine. If you want to add more later go for it. You want to get all the necessary requirements done first. 
+-	It would be preferable to have it in an app but if you need to pawn that off on another app that is fine we will not dock you on it.
+5.	You have to have at least username and password. Certain things are necessary such as Team Names but it needs to be editable because event planning is very volatile. So they have to be able to change things instantly. (Really needs to be editable)
+6.	Each event will have its own schedule.  If you want to have a category section for all events that would be fine, but not necessary (extra feature). But not necessary to worry about. 
+Is there an Event schedule as well as personal user schedules?
+-	Employee schedule is a personal schedule for time available
+-	Event Schedule is editable by event manager / assistant / team supervisors for big events
+7.	HR is basically just there for hiring and firing an employee (making accounts). 
+8.	They’re going to be similar. The only thing is that it comes down to an organization idea. When they first get an event and he has 10 employees he’ll just add 10 people to the event (not selecting specific employees). Permission system will be hard to add, so if you want to put it is an add-on that’s fine. You don’t need to, it won’t go against you. ( don’t worry too much about the permissions
+9.	At least a notification. That’ll be up to ya’ll. 
+How web connected does this need to be when we turn-in?
+-	That would be nice, but for the project if ya’ll just have a mock thing that’s fine. The big thing is demoing all the basic stuff from a single phone
+
+1st story log-in
+2nd be able to sign up and delete users
