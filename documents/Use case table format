@@ -1,0 +1,8 @@
+Format all use case tables in the following manner:
+
+ID #
+Name
+Preconditions
+Post-conditions
+Main flow
+Alternate flow
