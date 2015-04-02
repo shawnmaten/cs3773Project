@@ -1,6 +1,7 @@
 package com.marsdayjam.eventplanner;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,9 +43,11 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        DBController dbController = DBController.getInstance(this);
-        long rowId = dbController.insertLogin("marsdayjam@gmail.com", "password");
-        Toast.makeText(this, "rowId: " + rowId, Toast.LENGTH_LONG).show();
+        if (!LoginActivity.getLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Override

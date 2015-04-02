@@ -1,5 +1,6 @@
 package com.marsdayjam.eventplanner;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -28,6 +29,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+        ContentValues values = new ContentValues();
+        values.put(LoginTable.COLUMN_NAME_EMAIL, "marsdayjam@gmail.com");
+        values.put(LoginTable.COLUMN_NAME_PASSWORD, "masterPassword");
+        db.insert(LoginTable.TABLE_NAME, null, values);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
