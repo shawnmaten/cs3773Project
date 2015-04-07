@@ -34,7 +34,7 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
-    private static boolean loggedIn = false;
+    private static Employee user = null;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -150,6 +150,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             focusView.requestFocus();
         } else {
             DBController dbController = DBController.getInstance(this);
+            Employee employee;
 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -157,8 +158,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);*/
 
-            if (dbController.checkLogin(email, password)) {
-                loggedIn = true;
+            employee = dbController.getEmployee(email);
+            if (employee != null && employee.getPassword().equals(password)) {
+                user = employee;
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -324,8 +326,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
     }
 
-    public static boolean getLoggedIn() {
-        return loggedIn;
+    public static Employee getUser() {
+        return user;
     }
 }
 

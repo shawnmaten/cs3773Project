@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.marsdayjam.eventplanner.DBContract.LoginTable;
+import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
 
 public class DBController {
     private static DBController ourInstance;
@@ -26,42 +26,59 @@ public class DBController {
         db = dbHelper.getWritableDatabase();
     }
 
-    public long insertLogin(String email, String password) {
+    public long insertLogin(String email, String password, int role) {
         ContentValues values = new ContentValues();
-        values.put(LoginTable.COLUMN_NAME_EMAIL, email);
-        values.put(LoginTable.COLUMN_NAME_PASSWORD, password);
-        return db.insert(LoginTable.TABLE_NAME, null, values);
+        values.put(EmployeeTable.COLUMN_NAME_EMAIL, email);
+        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, password);
+        values.put(EmployeeTable.COLUMN_NAME_ROLE, role);
+        return db.insert(EmployeeTable.TABLE_NAME, null, values);
     }
 
-    public Cursor readLogin(String email) {
+    public Employee getEmployee(String email) {
+        Cursor cursor;
+        Employee employee;
+
         String[] projection = {
-                LoginTable._ID,
-                LoginTable.COLUMN_NAME_EMAIL,
-                LoginTable.COLUMN_NAME_PASSWORD
+                EmployeeTable._ID,
+                EmployeeTable.COLUMN_NAME_EMAIL,
+                EmployeeTable.COLUMN_NAME_PASSWORD,
+                EmployeeTable.COLUMN_NAME_ROLE
         };
-        String sortOrder = LoginTable._ID + " DESC";
-        String selection = LoginTable.COLUMN_NAME_EMAIL + "=?";
+        String sortOrder = EmployeeTable._ID + " DESC";
+        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
         String selectionArgs[] = {
                 email
         };
 
-        return db.query(
-                LoginTable.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
+        cursor = db.query(
+                EmployeeTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
         );
+
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(EmployeeTable._ID)
+            );
+            String password = cursor.getString(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_PASSWORD)
+            );
+            int roleCode = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_ROLE)
+            );
+            cursor.close();
+
+            employee =  new Employee(id, email, password, roleCode, null);
+        }
+        else
+            employee = null;
+
+        cursor.close();
+        return employee;
     }
 
-    public boolean checkLogin(String email, String password) {
-        Cursor cursor = readLogin(email);
-        cursor.moveToFirst();
-        String dbPassword = cursor.getString(
-                cursor.getColumnIndexOrThrow(LoginTable.COLUMN_NAME_PASSWORD)
-        );
-        return dbPassword.equals(password);
-    }
 }
