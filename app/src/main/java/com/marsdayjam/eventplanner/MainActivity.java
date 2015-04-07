@@ -2,9 +2,11 @@ package com.marsdayjam.eventplanner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -16,7 +18,8 @@ import android.view.ViewGroup;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        EmployeeInfo.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -53,9 +56,21 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        switch (position) {
+            case 0:
+                EmployeeInfo employeeInfoFragment = EmployeeInfo.newInstance(null, null);
+                fragmentTransaction.replace(R.id.container, employeeInfoFragment,
+                        "employeeInfoFragment");
+
+                break;
+            default:
+                fragmentTransaction.replace(R.id.container,
+                        PlaceholderFragment.newInstance(position + 1));
+        }
+
+        fragmentTransaction.commit();
     }
 
     public void onSectionAttached(int number) {
@@ -106,6 +121,11 @@ public class MainActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**
