@@ -20,6 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     EmployeeTable._ID + " INTEGER PRIMARY KEY" + CM +
                     EmployeeTable.COLUMN_NAME_EMAIL + TEXT_TYPE + CM +
                     EmployeeTable.COLUMN_NAME_PASSWORD + TEXT_TYPE + CM +
+                    EmployeeTable.COLUMN_NAME_FIRST + TEXT_TYPE + CM +
+                    EmployeeTable.COLUMN_NAME_LAST + TEXT_TYPE + CM +
                     EmployeeTable.COLUMN_NAME_ROLE + INT_TYPE + RP;
 
     private static final String CREATE_ROLES =
@@ -48,6 +50,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values = new ContentValues();
         values.put(EmployeeTable.COLUMN_NAME_EMAIL, "hr1@eventplanners.com");
         values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "hr1Password");
+        values.put(EmployeeTable.COLUMN_NAME_FIRST, "Bob");
+        values.put(EmployeeTable.COLUMN_NAME_LAST, "HR-Person");
         values.put(EmployeeTable.COLUMN_NAME_ROLE, 0);
         db.insert(DBContract.EmployeeTable.TABLE_NAME, null, values);
 

@@ -42,6 +42,8 @@ public class DBController {
                 EmployeeTable._ID,
                 EmployeeTable.COLUMN_NAME_EMAIL,
                 EmployeeTable.COLUMN_NAME_PASSWORD,
+                EmployeeTable.COLUMN_NAME_FIRST,
+                EmployeeTable.COLUMN_NAME_LAST,
                 EmployeeTable.COLUMN_NAME_ROLE
         };
         String sortOrder = EmployeeTable._ID + " DESC";
@@ -67,12 +69,23 @@ public class DBController {
             String password = cursor.getString(
                     cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_PASSWORD)
             );
+            String first = cursor.getString(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_FIRST)
+            );
+            String last = cursor.getString(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_LAST)
+            );
             int roleCode = cursor.getInt(
                     cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_ROLE)
             );
             cursor.close();
 
-            employee =  new Employee(id, email, password, roleCode, null);
+            employee =  new Employee();
+            employee.setId(id);
+            employee.setPassword(password);
+            employee.setFirst(first);
+            employee.setLast(last);
+            employee.setRoleCode(roleCode);
         }
         else
             employee = null;
