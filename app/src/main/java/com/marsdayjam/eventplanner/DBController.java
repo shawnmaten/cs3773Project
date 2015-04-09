@@ -73,7 +73,7 @@ public class DBController {
       return employeeList;
     }
 
-    //Getting employee count
+    //Getting total employee count
     public int getEmployeeCount(){
         String countQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
         db = dbHelper.getReadableDatabase();
