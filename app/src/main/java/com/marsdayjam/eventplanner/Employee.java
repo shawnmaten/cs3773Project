@@ -64,4 +64,10 @@ public class Employee {
     public void setRoleTitle(String roleTitle) {
         this.roleTitle = roleTitle;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Employee: %d %s %s %s %s %d %s",
+                id, email, password, first, last, roleCode, roleTitle);
+    }
 }
