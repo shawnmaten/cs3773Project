@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DBController {
     private static DBController ourInstance;
-    DBHelper dbHelper = null;
+    private DBHelper dbHelper = null;
     private SQLiteDatabase db;
 
     public static DBController getInstance(Context context) {

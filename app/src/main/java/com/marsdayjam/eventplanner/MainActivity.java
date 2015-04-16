@@ -80,7 +80,6 @@ public class MainActivity extends ActionBarActivity
         }
 
         int val = dbController.getEmployeeCount();
-        dbController.dbHelper.close();
         Log.e(this.toString(), "The total count of employees is " + val);
     }
 
