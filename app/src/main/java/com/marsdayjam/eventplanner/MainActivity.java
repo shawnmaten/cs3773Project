@@ -14,7 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity
@@ -53,8 +54,34 @@ public class MainActivity extends ActionBarActivity
         dbController.insertEmployee("test@gmail.com", "password", "Some", "Dude",
                 DBContract.RolesTable.ROLE_GE);
         Employee employee = dbController.getEmployee("test@gmail.com");
-        Log.e(this.toString(), employee.toString());
+        List<Employee> allemp = dbController.getAllEmployees();
+        for(Employee em: allemp) {
+            Log.e(this.toString(), em.toString());
+        }
 
+        Log.e(this.toString(), "Before deleting anything");
+        dbController.deleteEmployee(employee.getId());
+        /*So after further testing I realized some things about the
+        * database handling. The most important is that when making changes
+        * to the database you must allow for some time after. Database changes
+        * were not reflected sometimes because It would try to print out employees
+        * before the changes were reflected in the database so it would inaccuratly print
+        * employees. I found that momentarily sleeping after deleting an employee fixes this issue*/
+        try {
+            Thread.sleep(1000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
+        Log.e(this.toString(), "Lets see if they've been deleted");
+        allemp = dbController.getAllEmployees();
+        for(Employee em: allemp) {
+            Log.e(this.toString(), em.toString());
+        }
+
+        int val = dbController.getEmployeeCount();
+        dbController.dbHelper.close();
+        Log.e(this.toString(), "The total count of employees is " + val);
     }
 
     @Override

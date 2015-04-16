@@ -52,8 +52,8 @@ public class DBController {
 
     //Get all employees
     public List<Employee> getAllEmployees(){
-      List<Employee> employeeList = new ArrayList<Employee>();
-      //Select All Query
+        List<Employee> employeeList = null;
+        employeeList = new ArrayList<Employee>();      //Select All Query
       String selectQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
       Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -75,13 +75,12 @@ public class DBController {
 
     //Getting total employee count
     public int getEmployeeCount(){
-        String countQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
+        String countQuery = "SELECT  * FROM " + EmployeeTable.TABLE_NAME;
         db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
         cursor.close();
-
-        //return count
-        return cursor.getCount();
+        return cnt;
     }
 
     //updating a single employee
@@ -149,6 +148,7 @@ public class DBController {
 
             employee =  new Employee();
             employee.setId(id);
+            employee.setEmail(email);
             employee.setPassword(password);
             employee.setFirst(first);
             employee.setLast(last);
@@ -160,5 +160,6 @@ public class DBController {
         cursor.close();
         return employee;
     }
+
 
 }
