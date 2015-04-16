@@ -99,8 +99,8 @@ public class DBController {
                 new String[]{String.valueOf(employee.getId())});
     }
 
-    //Get a single employee
-    public Employee getEmployee(String email) {
+    // helper for getEmployee() so it can take id or email
+    public Employee getEmployeeHelper(String selection, String selectionArgs[]) {
         Cursor cursor;
         Employee employee;
 
@@ -113,10 +113,6 @@ public class DBController {
                 EmployeeTable.COLUMN_NAME_ROLE
         };
         String sortOrder = EmployeeTable._ID + " DESC";
-        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
-        String selectionArgs[] = {
-                email
-        };
 
         cursor = db.query(
                 EmployeeTable.TABLE_NAME,
@@ -131,6 +127,9 @@ public class DBController {
         if (cursor.moveToFirst()) {
             int id = cursor.getInt(
                     cursor.getColumnIndexOrThrow(EmployeeTable._ID)
+            );
+            String email = cursor.getString(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_EMAIL)
             );
             String password = cursor.getString(
                     cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_PASSWORD)
@@ -161,5 +160,22 @@ public class DBController {
         return employee;
     }
 
+    // Get a single employee by their email, used for login
+    public Employee getEmployee(String email) {
+        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
+        String selectionArgs[] = {
+                email
+        };
+        return getEmployeeHelper(selection, selectionArgs);
+    }
+
+    // Get a single employee by their id
+    public Employee getEmployee(int id) {
+        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
+        String selectionArgs[] = {
+                Integer.toString(id)
+        };
+        return getEmployeeHelper(selection, selectionArgs);
+    }
 
 }
