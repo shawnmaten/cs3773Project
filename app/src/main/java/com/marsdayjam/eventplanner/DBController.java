@@ -4,12 +4,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DBController {
     private static DBController ourInstance;
-
+    private DBHelper dbHelper;
     private SQLiteDatabase db;
 
     public static DBController getInstance(Context context) {
@@ -22,19 +27,91 @@ public class DBController {
     }
 
     private DBController(Context context) {
-        DBHelper dbHelper = new DBHelper(context);
+        dbHelper = new DBHelper(context);
         db = dbHelper.getWritableDatabase();
     }
 
-    public long insertLogin(String email, String password, int role) {
+    public static DBController getMockDBController(Context context) {
+        return new DBController(context);
+    }
+
+    /*THIS IS TO ADD EMPLOYEES TO THE DATABASE*/
+    public long insertEmployee(String email, String password, String first, String last, int role) {
+        long id;
         ContentValues values = new ContentValues();
         values.put(EmployeeTable.COLUMN_NAME_EMAIL, email);
         values.put(EmployeeTable.COLUMN_NAME_PASSWORD, password);
+        values.put(EmployeeTable.COLUMN_NAME_FIRST, first);
+        values.put(EmployeeTable.COLUMN_NAME_LAST, last);
         values.put(EmployeeTable.COLUMN_NAME_ROLE, role);
-        return db.insert(EmployeeTable.TABLE_NAME, null, values);
+        id = db.insert(EmployeeTable.TABLE_NAME, null, values);
+        return id;
     }
 
-    public Employee getEmployee(String email) {
+    /*THIS IS TO DELETE EMPLOYEES TO THE DATABASE*/
+    public void deleteEmployee(long id){
+        //First we have to tell it what Column we are going to find employee by
+        String selection = EmployeeTable._ID + " LIKE ?";
+        //Then we have to give it the value to match the employee by in the column
+        String[] selectionArgs = { String.valueOf(id) };
+        // Now put that plus the table name into the delete function to remove employee
+        db.delete(EmployeeTable.TABLE_NAME, selection, selectionArgs);
+    }
+
+    //Get all employees
+    public List<Employee> getAllEmployees(){
+        List<Employee> employeeList;
+        employeeList = new ArrayList<>();      //Select All Query
+        String selectQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all rows and adding to list
+        if(cursor.moveToFirst()){
+            do {
+                Employee employee = new Employee();
+                employee.setId(Integer.parseInt(cursor.getString(0)));
+                employee.setEmail(cursor.getString(1));
+                employee.setFirst(cursor.getString(2));
+                employee.setLast(cursor.getString(3));
+                //Adding employee to list
+                employeeList.add(employee);
+            } while (cursor.moveToNext());
+        }
+        //return employee list
+        cursor.close();
+        return employeeList;
+    }
+
+    //Getting total employee count
+    public long getEmployeeCount(){
+        String countQuery = "SELECT  * FROM " + EmployeeTable.TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
+
+    //updating a single employee
+    public long updateEmployee(Employee employee){
+        long id;
+        ContentValues values = new ContentValues();
+        values.put(EmployeeTable.COLUMN_NAME_EMAIL, employee.getEmail());
+        values.put(EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
+        values.put(EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
+        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
+        values.put(EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleTitle());
+
+        //updating row
+        id =  db.update(EmployeeTable.TABLE_NAME,
+                values,
+                EmployeeTable._ID + " = ?",
+                new String[]{String.valueOf(employee.getId())});
+        
+        return id;
+    }
+
+    // helper for getEmployee() so it can take id or email
+    public Employee getEmployeeHelper(String selection, String selectionArgs[]) {
         Cursor cursor;
         Employee employee;
 
@@ -47,10 +124,6 @@ public class DBController {
                 EmployeeTable.COLUMN_NAME_ROLE
         };
         String sortOrder = EmployeeTable._ID + " DESC";
-        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
-        String selectionArgs[] = {
-                email
-        };
 
         cursor = db.query(
                 EmployeeTable.TABLE_NAME,
@@ -65,6 +138,9 @@ public class DBController {
         if (cursor.moveToFirst()) {
             int id = cursor.getInt(
                     cursor.getColumnIndexOrThrow(EmployeeTable._ID)
+            );
+            String email = cursor.getString(
+                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_EMAIL)
             );
             String password = cursor.getString(
                     cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_PASSWORD)
@@ -82,6 +158,7 @@ public class DBController {
 
             employee =  new Employee();
             employee.setId(id);
+            employee.setEmail(email);
             employee.setPassword(password);
             employee.setFirst(first);
             employee.setLast(last);
@@ -92,6 +169,24 @@ public class DBController {
 
         cursor.close();
         return employee;
+    }
+
+    // Get a single employee by their email, used for login
+    public Employee getEmployee(String email) {
+        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
+        String selectionArgs[] = {
+                email
+        };
+        return getEmployeeHelper(selection, selectionArgs);
+    }
+
+    // Get a single employee by their id
+    public Employee getEmployee(long id) {
+        String selection = EmployeeTable._ID + "=?";
+        String selectionArgs[] = {
+                Long.toString(id)
+        };
+        return getEmployeeHelper(selection, selectionArgs);
     }
 
 }
