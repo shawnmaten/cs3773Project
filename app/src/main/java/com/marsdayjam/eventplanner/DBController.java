@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
+import com.marsdayjam.eventplanner.DBContract.RolesTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,6 +164,7 @@ public class DBController {
             employee.setFirst(first);
             employee.setLast(last);
             employee.setRoleCode(roleCode);
+            employee.setRoleTitle(getRoleDescription(roleCode));
         }
         else
             employee = null;
@@ -187,6 +189,36 @@ public class DBController {
                 Long.toString(id)
         };
         return getEmployeeHelper(selection, selectionArgs);
+    }
+
+    // Get the word description of an employee role
+    public String getRoleDescription(int roleCode) {
+        String selection = RolesTable._ID + "=?";
+        String selectionArgs[] = {
+                Integer.toString(roleCode)
+        };
+        String[] projection = {
+                RolesTable._ID,
+                RolesTable.COLUMN_NAME_TITLE
+        };
+        String sortOrder = RolesTable._ID + " DESC";
+        Cursor cursor = db.query(
+                RolesTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        String title = "";
+
+        if (cursor.moveToFirst()) {
+            title = cursor.getString(cursor.getColumnIndexOrThrow(RolesTable.COLUMN_NAME_TITLE));
+        }
+
+        cursor.close();
+        return title;
     }
 
 }

@@ -12,7 +12,7 @@ public final class DBControllerTest extends AndroidTestCase {
     public static final String testPassword = "unitTestPassword";
     public static final String testFirst = "Unit";
     public static final String testLast = "Test";
-    public static final int testRole = DBContract.RolesTable.ROLE_GE;
+    public static final int testRole = 0;
 
     private long testId;
     private DBController dbController;

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -15,11 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
-
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private static final int LOG_IN_REQUEST = 0;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -30,6 +29,25 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (LoginActivity.getUser() != null)
+            Log.e("Logged In User: ", LoginActivity.getUser().toString());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case LOG_IN_REQUEST:
+                recreate();
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +65,28 @@ public class MainActivity extends ActionBarActivity
 
         if (LoginActivity.getUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, LOG_IN_REQUEST);
         }
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        if (LoginActivity.getUser() != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            switch (position) {
+                case 0:
+                    fragmentTransaction.replace(
+                            R.id.container,
+                            EmployeeFragment.newInstance(position + 1));
+                    break;
+                default:
+                    fragmentTransaction
+                            .replace(R.id.container, PlaceholderFragment.newInstance(position + 1));
+                    break;
+            }
+            fragmentTransaction.commit();
+        }
     }
 
     public void onSectionAttached(int number) {
@@ -118,7 +147,7 @@ public class MainActivity extends ActionBarActivity
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        public static final String ARG_SECTION_NUMBER = "section_number";
 
         /**
          * Returns a new instance of this fragment for the given section
