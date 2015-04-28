@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class AddCalendarEvent extends Fragment implements View.OnClickListener{
+public class AddCalendarEventFragment extends Fragment implements View.OnClickListener{
 
     private static Boolean eventEntered = Boolean.FALSE;
     private static Boolean timeEntered = Boolean.FALSE;

@@ -17,7 +17,7 @@ import java.util.Date;
 
 
 @SuppressLint("ValidFragment")
-public class CalendarOptions extends Fragment implements View.OnClickListener {
+public class CalendarOptionsFragment extends Fragment implements View.OnClickListener {
 
     private static CaldroidFragment caldroidFragment;
     private static Context context;
@@ -38,7 +38,7 @@ public class CalendarOptions extends Fragment implements View.OnClickListener {
     }
 
     @SuppressLint("ValidFragment")
-    public CalendarOptions(final CaldroidFragment caldroidFragment, final Context context){
+    public CalendarOptionsFragment(final CaldroidFragment caldroidFragment, final Context context){
         this.caldroidFragment = caldroidFragment;
         this.context = context;
 

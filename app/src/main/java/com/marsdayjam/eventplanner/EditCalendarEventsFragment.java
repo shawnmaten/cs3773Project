@@ -10,13 +10,13 @@ import android.widget.Button;
 /**
  * Created by Beaster on 4/28/2015.
  */
-public class EditCalendarEvents extends Fragment implements View.OnClickListener {
+public class EditCalendarEventsFragment extends Fragment implements View.OnClickListener {
 
     private static Button delete, back;
 
 
     //empty Constructor
-    public EditCalendarEvents(){}
+    public EditCalendarEventsFragment(){}
 
 
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
