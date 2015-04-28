@@ -188,5 +188,4 @@ public class DBController {
         };
         return getEmployeeHelper(selection, selectionArgs);
     }
-
 }

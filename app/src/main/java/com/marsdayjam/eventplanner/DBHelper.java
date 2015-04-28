@@ -38,9 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "EventPlanner.db";
 
-    public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
+    public DBHelper(Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION); }
     public void onCreate(SQLiteDatabase db) {
         ContentValues values;
 
@@ -53,6 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(EmployeeTable.COLUMN_NAME_FIRST, "Bob");
         values.put(EmployeeTable.COLUMN_NAME_LAST, "HR-Person");
         values.put(EmployeeTable.COLUMN_NAME_ROLE, 0);
+        //values.put(EmployeeTable.COLUMN_NAME_CALENDARNAME, "CalendarOptions: Bob HR-Person");
         db.insert(DBContract.EmployeeTable.TABLE_NAME, null, values);
 
         values = new ContentValues();

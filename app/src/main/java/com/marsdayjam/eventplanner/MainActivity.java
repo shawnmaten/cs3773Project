@@ -1,21 +1,24 @@
 package com.marsdayjam.eventplanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
+import com.roomorama.caldroid.CaldroidFragment;
+
+import java.util.Calendar;
 
 
 public class MainActivity extends ActionBarActivity
@@ -53,11 +56,31 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        Context context = getApplicationContext();
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        //fragmentManager.beginTransaction()
+          //      .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+            //    .commit();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        switch (position){
+            case 1:
+                CaldroidFragment caldroidFragment = new CaldroidFragment();
+                CalendarOptions calendar = new CalendarOptions(caldroidFragment, context);
+                Bundle args = new Bundle();
+                Calendar cal = Calendar.getInstance();
+                args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+                args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+                caldroidFragment.setArguments(args);
+                ft.add(R.id.container, caldroidFragment);
+                ft.add(R.id.container, calendar);
+                break;
+            default:
+                ft.replace(R.id.container, PlaceholderFragment.newInstance(position +1));
+                break;
+
+        }
+        ft.commit();
     }
 
     public void onSectionAttached(int number) {
