@@ -4,3 +4,13 @@
 /.idea/libraries
 .DS_Store
 /build
+
+settings.gradle
+gradlew.bat
+gradlew
+gradle.properties
+cs3773Project.iml
+build.gradle
+/gradle
+.idea
+
