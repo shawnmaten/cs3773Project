@@ -1,5 +1,6 @@
 package com.marsdayjam.eventplanner;
 
+import android.app.usage.UsageEvents;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -30,12 +31,15 @@ public class DBControllerD {
 
     // Handle Event Table operations
     // Event and Calendar names must be unique(no doubles)
-    public long insertEvent(String eventName, String sDate, String eDate,
-                            String teamName, String calendarName) {
+    public long insertEvent(String eventName, String host, String location, String sDate,
+                            String eTime, String eDate, String teamName, String calendarName) {
         long id;
         ContentValues values = new ContentValues();
         values.put(EventTable.COLUMN_NAME_EVENTNAME, eventName);
+        values.put(EventTable.COLUMN_NAME_HOST, host);
+        values.put(EventTable.COLUMN_NAME_LOCATION, location);
         values.put(EventTable.COLUMN_NAME_SDATE, sDate);
+        values.put(EventTable.COLUMN_NAME_ETIME, eTime);
         values.put(EventTable.COLUMN_NAME_EDATE, eDate);
         values.put(EventTable.COLUMN_NAME_TEAMNAME, teamName);
         values.put(EventTable.COLUMN_NAME_CALENDARNAME, calendarName);
@@ -57,6 +61,41 @@ public class DBControllerD {
         return list;
     }
 
+    /*
+    Returns ArrayList containing all relevant Event Data for viewing.
+    Must remember index of each piece of information when using the ArrayList.
+     */
+    public ArrayList<String> eventDetails(String eventName){
+        ArrayList<String> list = new ArrayList<String>();
+        String[] columns = {EventTable.COLUMN_NAME_EVENTNAME, EventTable.COLUMN_NAME_HOST,
+                            EventTable.COLUMN_NAME_LOCATION, EventTable.COLUMN_NAME_SDATE,
+                            EventTable.COLUMN_NAME_EDATE, EventTable.COLUMN_NAME_ETIME};
+        Cursor cursor = db.query(EventTable.TABLE_NAME, columns, EventTable.COLUMN_NAME_EVENTNAME+
+                " = '"+eventName+"'", null, null, null, null);
+        cursor.moveToNext();
+
+            int index = cursor.getColumnIndex(EventTable.COLUMN_NAME_EVENTNAME);
+            String event = cursor.getString(index);
+            list.add(event);
+            index = cursor.getColumnIndex(EventTable.COLUMN_NAME_HOST);
+            String host = cursor.getString(index);
+            list.add(host);
+            index = cursor.getColumnIndex(EventTable.COLUMN_NAME_LOCATION);
+            String location = cursor.getString(index);
+            list.add(location);
+            index = cursor.getColumnIndex(EventTable.COLUMN_NAME_SDATE);
+            String startD = cursor.getString(index);
+            list.add(startD);
+            index = cursor.getColumnIndex(EventTable.COLUMN_NAME_EDATE);
+            String endD = cursor.getString(index);
+            list.add(endD);
+            index = cursor.getColumnIndex(EventTable.COLUMN_NAME_ETIME);
+            String endT = cursor.getString(index);
+            list.add(endT);
+
+        return list;
+    }
+
     public void deleteEvent(String eventName) {
         String[] columns = {EventTable.COLUMN_NAME_EVENTNAME, EventTable.COLUMN_NAME_CALENDARNAME};
         Cursor cursor = db.query(EventTable.TABLE_NAME, columns, EventTable.COLUMN_NAME_EVENTNAME+
@@ -72,6 +111,8 @@ public class DBControllerD {
 
 
     // Handle Team Table operations
+
+
 
 
 

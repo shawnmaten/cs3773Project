@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/deleteEvents"
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/backToCalendar"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/deleteEvents"
+        android:layout_toEndOf="@+id/deleteEvents"
+        android:layout_marginLeft="46dp"
+        android:layout_marginStart="46dp" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eventList"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="false"
+        android:clickable="true"
+        android:smoothScrollbar="true"
+        android:layout_above="@+id/deleteEvents"
+        android:choiceMode="singleChoice" />
+
+</RelativeLayout>
