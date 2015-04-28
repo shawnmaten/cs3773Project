@@ -34,10 +34,13 @@ public class DBHelperD extends SQLiteOpenHelper {
                     CalendarTable.COLUMN_NAME_EVENT + TEXT_TYPE + RP;
 
     private static final String CREATE_EVENT =
-            "CREATE TABLE " + CalendarTable.TABLE_NAME + LP +
+            "CREATE TABLE " + EventTable.TABLE_NAME + LP +
                     EventTable._ID + " INTEGER PRIMARY KEY" + CM +
                     EventTable.COLUMN_NAME_EVENTNAME + TEXT_TYPE + CM +
+                    EventTable.COLUMN_NAME_HOST + TEXT_TYPE + CM +
+                    EventTable.COLUMN_NAME_LOCATION + TEXT_TYPE + CM +
                     EventTable.COLUMN_NAME_SDATE + TEXT_TYPE + CM +
+                    EventTable.COLUMN_NAME_ETIME + TEXT_TYPE + CM +
                     EventTable.COLUMN_NAME_EDATE + TEXT_TYPE + CM +
                     EventTable.COLUMN_NAME_TEAMNAME + TEXT_TYPE + CM +
                     EventTable.COLUMN_NAME_CALENDARNAME + TEXT_TYPE + RP;

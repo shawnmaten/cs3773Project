@@ -34,6 +34,10 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
+    private Boolean inCalendar = Boolean.FALSE;
+    private CaldroidFragment cFrag;
+    private CalendarOptions cOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,19 +67,27 @@ public class MainActivity extends ActionBarActivity
           //      .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
             //    .commit();
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        if(inCalendar) {
+            ft.remove(cFrag);
+            ft.remove(cOptions);
+        }
         switch (position){
             case 1:
                 CaldroidFragment caldroidFragment = new CaldroidFragment();
                 CalendarOptions calendar = new CalendarOptions(caldroidFragment, context);
+                cOptions = calendar;
                 Bundle args = new Bundle();
                 Calendar cal = Calendar.getInstance();
                 args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
                 args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
                 caldroidFragment.setArguments(args);
+                cFrag = caldroidFragment;
                 ft.add(R.id.container, caldroidFragment);
                 ft.add(R.id.container, calendar);
+                inCalendar = Boolean.TRUE;
                 break;
             default:
+                inCalendar = Boolean.FALSE;
                 ft.replace(R.id.container, PlaceholderFragment.newInstance(position +1));
                 break;
 
