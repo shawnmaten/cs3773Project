@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
+import com.marsdayjam.eventplanner.DBContract.CalendarList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,9 @@ public class DBController {
         values.put(EmployeeTable.COLUMN_NAME_FIRST, first);
         values.put(EmployeeTable.COLUMN_NAME_LAST, last);
         values.put(EmployeeTable.COLUMN_NAME_ROLE, role);
+        //values.put(EmployeeTable.COLUMN_NAME_CALENDARNAME, calendarName);
         id = db.insert(EmployeeTable.TABLE_NAME, null, values);
+        //DBControllerD.insertCalendar(calendarName);
         return id;
     }
 
@@ -52,6 +55,17 @@ public class DBController {
     public void deleteEmployee(long id){
         //First we have to tell it what Column we are going to find employee by
         String selection = EmployeeTable._ID + " LIKE ?";
+
+        /*
+        String[] columns = {EmployeeTable._ID, EmployeeTable.COLUMN_NAME_CALENDARNAME};
+        Cursor cursor = db.query(EmployeeTable.TABLE_NAME, columns, EmployeeTable_ID+
+                " = '"+id+"'", null, null, null, null);
+        cursor.moveToNext();
+        int index = cursor.getColumnIndex(EmployeeTable.COLUMN_NAME_CALENDARNAME);
+        String calendarName = cursor.getString(index);
+        DBControllerD.deleteCalendar(calendarName);
+        */
+
         //Then we have to give it the value to match the employee by in the column
         String[] selectionArgs = { String.valueOf(id) };
         // Now put that plus the table name into the delete function to remove employee
