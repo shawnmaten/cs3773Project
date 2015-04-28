@@ -1,6 +1,5 @@
 package com.marsdayjam.eventplanner;
 
-import android.annotation.SuppressLint;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,14 +15,12 @@ import com.roomorama.caldroid.CaldroidListener;
 import java.util.Date;
 
 
-@SuppressLint("ValidFragment")
 public class CalendarOptions extends Fragment implements View.OnClickListener {
 
     private static CaldroidFragment caldroidFragment;
     private static Context context;
     private static Boolean dateSelected = Boolean.FALSE;
     private static String selectedDate;
-    private static Date prevDate;
     private static Button edit, viewDelete;
 
     public static String getSelectedDate() {
@@ -37,8 +34,7 @@ public class CalendarOptions extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    @SuppressLint("ValidFragment")
-    public CalendarOptions(final CaldroidFragment caldroidFragment, final Context context){
+    public CalendarOptions(CaldroidFragment caldroidFragment, final Context context){
         this.caldroidFragment = caldroidFragment;
         this.context = context;
 
@@ -46,15 +42,8 @@ public class CalendarOptions extends Fragment implements View.OnClickListener {
 
             @Override
             public void onSelectDate(Date date, View view) {
-                if(dateSelected == Boolean.TRUE)
-                    caldroidFragment.clearBackgroundResourceForDate(prevDate);
                 dateSelected = Boolean.TRUE;
-                prevDate = date;
                 selectedDate = date.toString();
-                caldroidFragment.setBackgroundResourceForDate(R.color.yellow,date);
-                caldroidFragment.refreshView();
-                Toast.makeText(context, date.toString(),
-                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -85,14 +74,10 @@ public class CalendarOptions extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.editCalendar){
-            if(dateSelected == Boolean.TRUE){
 
-            }
         }
         else if (v.getId() == R.id.viewEvents){
-            if(dateSelected == Boolean.TRUE){
 
-            }
         }
     }
 }

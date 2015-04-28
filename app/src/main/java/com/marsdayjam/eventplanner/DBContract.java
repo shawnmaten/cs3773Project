@@ -13,8 +13,6 @@ public final class DBContract {
         public static final String COLUMN_NAME_FIRST = "first";
         public static final String COLUMN_NAME_LAST = "last";
         public static final String COLUMN_NAME_ROLE = "role";
-        //leave unimplemented until decide on calendarTable schema
-        //will be name of corresponding CalendarTable (must be unique)
         //public static final String COLUMN_NAME_CALENDARNAME = "calendar";
     }
 
@@ -29,14 +27,9 @@ public final class DBContract {
      */
     public static abstract class EventTable implements BaseColumns {
         public static final String TABLE_NAME = "events";
-        public static final String COLUMN_NAME_EVENTNAME= "eventName";
         public static final String COLUMN_NAME_SDATE = "startDate";
-        public static final String COLUMN_NAME_HOST = "host";
-        public static final String COLUMN_NAME_LOCATION = "location";
-        public static final String COLUMN_NAME_ETIME = "endTime";
         public static final String COLUMN_NAME_EDATE = "endDate";
-        public static final String COLUMN_NAME_TEAMNAME= "teamName";
-        //will be name of corresponding CalendarTable (must be unique)
+        public static final String COLUMN_NAME_TEAMS= "teams";
         public static final String COLUMN_NAME_CALENDARNAME = "calendar";
     }
 
@@ -53,23 +46,16 @@ public final class DBContract {
        Event CalendarOptions database created on creation of an event and deleted on event canceled or end
        date reached.
      */
-    //Definitely needs editing
     public static abstract class CalendarTable implements BaseColumns {
-        public static final String TABLE_NAME = "calendarName";
+        public static String CalendarName = "default";
+        public static final String TABLE_NAME = CalendarName;
         public static final String COLUMN_NAME_DATE = "date";
-        public static final String COLUMN_NAME_STARTH = "startHour";
-        public static final String COLUMN_NAME_STARTM = "startMinute";
-        public static final String COLUMN_NAME_ENDH = "endHour";
-        public static final String COLUMN_NAME_ENDM = "endMinute";
+        public static final String COLUMN_NAME_START = "start";
+        public static final String COLUMN_NAME_END = "end";
         public static final String COLUMN_NAME_EVENT = "event";
-    }
 
-    /* Table for storing Teams by unique TeamName and listing members for the team
-    */
-    public static abstract class TeamTable implements BaseColumns {
-        public static final String TABLE_NAME = "TeamName";
-        public static final String COLUMN_NAME_SUPERVISOR = "supervisor";
-        public static final String COLUMN_NAME_DUTIES = "duties";
-        public static final String COLUMN_NAME_MEMBERS = "members";
+        public void setCalendarName(String name) {
+            CalendarName = "CalendarOptions: " + name;
+        }
     }
 }
