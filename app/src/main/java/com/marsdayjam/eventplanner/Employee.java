@@ -1,7 +1,7 @@
 package com.marsdayjam.eventplanner;
 
 public class Employee {
-    private int id;
+    private long id;
     private String email;
     private String password;
     private String first;
@@ -9,11 +9,11 @@ public class Employee {
     private int roleCode;
     private String roleTitle;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

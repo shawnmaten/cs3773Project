@@ -4,13 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
 import com.marsdayjam.eventplanner.DBContract.RolesTable;
+import com.marsdayjam.eventplanner.DBContract.EventTable;
+import com.marsdayjam.eventplanner.DBContract.TeamTable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DBController {
@@ -221,55 +222,151 @@ public class DBController {
         return title;
     }
 
-    /**
-     * Handle Event Table operations. Event and Calendar names must be unique.
-     */
-    public long insertEvent(String eventName, String host, String location, String sDate,
-                            String eTime, String eDate, String teamName, String calendarName) {
-        long id;
+    // Everything after this is from Juan
+
+    // Inserts an Event.
+    public long insertEvent(Event event) {
         ContentValues values = new ContentValues();
-        values.put(DBContract.EventTable.COLUMN_NAME_EVENTNAME, eventName);
-        values.put(DBContract.EventTable.COLUMN_NAME_HOST, host);
-        values.put(DBContract.EventTable.COLUMN_NAME_LOCATION, location);
-        values.put(DBContract.EventTable.COLUMN_NAME_SDATE, sDate);
-        values.put(DBContract.EventTable.COLUMN_NAME_ETIME, eTime);
-        values.put(DBContract.EventTable.COLUMN_NAME_EDATE, eDate);
-        values.put(DBContract.EventTable.COLUMN_NAME_TEAMNAME, teamName);
-        values.put(DBContract.EventTable.COLUMN_NAME_CALENDARNAME, calendarName);
-        id = db.insert(DBContract.CalendarList.TABLE_NAME, null, values);
-        long cid = insertCalendar(calendarName);
-        return id; // negative if something went wrong, is row index otherwise
+        values.put(EventTable.COLUMN_NAME_EVENT_NAME, event.getName());
+        values.put(EventTable.COLUMN_NAME_HOST, event.getHost());
+        values.put(EventTable.COLUMN_NAME_LOCATION, event.getLocation());
+        values.put(EventTable.COLUMN_NAME_START, event.getStart().getTime());
+        values.put(EventTable.COLUMN_NAME_END, event.getEnd().getTime());
+        values.put(EventTable.COLUMN_NAME_MANAGER_ID, event.getManager().getId());
+        return db.insert(EventTable.TABLE_NAME, null, values);
     }
 
-    /**
-     * Returns an ArrayList of the eventNames intended for easy listing of Active Events.
-     */
-    public ArrayList<String> findAllEvents() {
-        String[] columns = {DBContract.EventTable.COLUMN_NAME_EVENTNAME};
-        Cursor cursor = db.query(DBContract.EventTable.TABLE_NAME, columns, null, null, null, null, null);
-        ArrayList<String> list = new ArrayList<String>();
-        while(cursor.moveToNext()){
-            int index  = cursor.getColumnIndex(DBContract.EventTable.COLUMN_NAME_EVENTNAME);
-            String eventName = cursor.getString(index);
-            list.add(eventName);
+    // Delete an Event based on its id.
+    public void deleteEvent(long id){
+        //First we have to tell it what Column we are going to find employee by
+        String selection = EventTable._ID + " LIKE ?";
+        //Then we have to give it the value to match the employee by in the column
+        String[] selectionArgs = { String.valueOf(id) };
+        // Now put that plus the table name into the delete function to remove employee
+        db.delete(EventTable.TABLE_NAME, selection, selectionArgs);
+    }
+
+    // Gets an Event based on its id.
+    public Event getEvent(long id) {
+        String selection = EventTable._ID + "=?";
+        String selectionArgs[] = {
+                Long.toString(id)
+        };
+        String[] projection = {
+                EventTable._ID,
+                EventTable.COLUMN_NAME_EVENT_NAME,
+                EventTable.COLUMN_NAME_HOST,
+                EventTable.COLUMN_NAME_LOCATION,
+                EventTable.COLUMN_NAME_START,
+                EventTable.COLUMN_NAME_END,
+                EventTable.COLUMN_NAME_MANAGER_ID
+        };
+        String sortOrder = RolesTable._ID + " DESC";
+        Cursor cursor = db.query(
+                EventTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        Event event = null;
+        if(cursor.moveToFirst()){
+            event = new Event();
+            event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(EventTable._ID)));
+            event.setName(cursor.getString(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_EVENT_NAME)));
+            event.setHost(cursor.getString(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_HOST)));
+            event.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_LOCATION)));
+            event.setStart(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_START))));
+            event.setEnd(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_END))));
+            event.setManager(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
+                    EventTable.COLUMN_NAME_MANAGER_ID))));
         }
-        return list;
+        cursor.close();
+        return event;
+    }
+
+    // Inserts an Event.
+    public long insertTeam(Team team) {
+        ContentValues values = new ContentValues();
+        values.put(TeamTable.COLUMN_NAME_EVENT_ID, team.getEvent().getId());
+        values.put(TeamTable.COLUMN_NAME_SUPERVISOR_ID, team.getSupervisor().getId());
+        values.put(TeamTable.COLUMN_NAME_TEAM_NAME, team.getName());
+        values.put(TeamTable.COLUMN_NAME_DUTIES, team.getDuties());
+        return db.insert(TeamTable.TABLE_NAME, null, values);
+    }
+
+    // Delete an Event based on its id.
+    public void deleteTeam(long id){
+        //First we have to tell it what Column we are going to find employee by
+        String selection = TeamTable._ID + " LIKE ?";
+        //Then we have to give it the value to match the employee by in the column
+        String[] selectionArgs = { String.valueOf(id) };
+        // Now put that plus the table name into the delete function to remove employee
+        db.delete(TeamTable.TABLE_NAME, selection, selectionArgs);
+    }
+
+    // Gets an Event based on its id.
+    public Team getTeam(long id) {
+        String selection = TeamTable._ID + "=?";
+        String selectionArgs[] = {
+                Long.toString(id)
+        };
+        String[] projection = {
+                TeamTable._ID,
+                TeamTable.COLUMN_NAME_EVENT_ID,
+                TeamTable.COLUMN_NAME_SUPERVISOR_ID,
+                TeamTable.COLUMN_NAME_TEAM_NAME,
+                TeamTable.COLUMN_NAME_DUTIES,
+        };
+        String sortOrder = RolesTable._ID + " DESC";
+        Cursor cursor = db.query(
+                TeamTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        Team team = null;
+        if(cursor.moveToFirst()){
+            team = new Team();
+            team.setId(cursor.getInt(cursor.getColumnIndexOrThrow(TeamTable._ID)));
+            team.setEvent(getEvent(cursor.getInt(cursor.getColumnIndexOrThrow(
+                    TeamTable.COLUMN_NAME_EVENT_ID))));
+            team.setSupervisor(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
+                    TeamTable.COLUMN_NAME_SUPERVISOR_ID))));
+            team.setName(cursor.getString(cursor.getColumnIndexOrThrow(
+                    TeamTable.COLUMN_NAME_TEAM_NAME)));
+            team.setDuties(cursor.getString(cursor.getColumnIndexOrThrow(
+                    TeamTable.COLUMN_NAME_DUTIES)));
+        }
+        cursor.close();
+        return team;
     }
 
     /**
      * Returns ArrayList containing all relevant Event Data for viewing. Must remember index of each
      * piece of information when using the ArrayList.
      */
+    /*
     public ArrayList<String> eventDetails(String eventName){
         ArrayList<String> list = new ArrayList<String>();
-        String[] columns = {DBContract.EventTable.COLUMN_NAME_EVENTNAME, DBContract.EventTable.COLUMN_NAME_HOST,
+        String[] columns = {DBContract.EventTable.COLUMN_NAME_EVENT_NAME, DBContract.EventTable.COLUMN_NAME_HOST,
                 DBContract.EventTable.COLUMN_NAME_LOCATION, DBContract.EventTable.COLUMN_NAME_SDATE,
                 DBContract.EventTable.COLUMN_NAME_EDATE, DBContract.EventTable.COLUMN_NAME_ETIME};
-        Cursor cursor = db.query(DBContract.EventTable.TABLE_NAME, columns, DBContract.EventTable.COLUMN_NAME_EVENTNAME+
+        Cursor cursor = db.query(DBContract.EventTable.TABLE_NAME, columns, DBContract.EventTable.COLUMN_NAME_EVENT_NAME +
                 " = '"+eventName+"'", null, null, null, null);
         cursor.moveToNext();
 
-        int index = cursor.getColumnIndex(DBContract.EventTable.COLUMN_NAME_EVENTNAME);
+        int index = cursor.getColumnIndex(DBContract.EventTable.COLUMN_NAME_EVENT_NAME);
         String event = cursor.getString(index);
         list.add(event);
         index = cursor.getColumnIndex(DBContract.EventTable.COLUMN_NAME_HOST);
@@ -290,10 +387,12 @@ public class DBController {
 
         return list;
     }
+    */
 
+    /*
     public void deleteEvent(String eventName) {
-        String[] columns = {DBContract.EventTable.COLUMN_NAME_EVENTNAME, DBContract.EventTable.COLUMN_NAME_CALENDARNAME};
-        Cursor cursor = db.query(DBContract.EventTable.TABLE_NAME, columns, DBContract.EventTable.COLUMN_NAME_EVENTNAME+
+        String[] columns = {DBContract.EventTable.COLUMN_NAME_EVENT_NAME, DBContract.EventTable.COLUMN_NAME_CALENDARNAME};
+        Cursor cursor = db.query(DBContract.EventTable.TABLE_NAME, columns, DBContract.EventTable.COLUMN_NAME_EVENT_NAME +
                 " = '"+eventName+"'", null, null, null, null);
         cursor.moveToNext();
         int index = cursor.getColumnIndex(DBContract.EventTable.COLUMN_NAME_CALENDARNAME);
@@ -301,12 +400,14 @@ public class DBController {
         deleteCalendar(calendarName);
 
         String[] whereArgs = {eventName};
-        db.delete(DBContract.EventTable.TABLE_NAME, DBContract.EventTable.COLUMN_NAME_EVENTNAME + "=?", whereArgs);
+        db.delete(DBContract.EventTable.TABLE_NAME, DBContract.EventTable.COLUMN_NAME_EVENT_NAME + "=?", whereArgs);
     }
+    */
 
     /**
      * Handle CalendarList operations.
      */
+    /*
     public long insertCalendar(String calendarName) {
         long id;
         //arbitrary method
@@ -316,17 +417,21 @@ public class DBController {
         id = db.insert(DBContract.CalendarList.TABLE_NAME, null, values);
         return id; // negative if something went wrong, is row index otherwise
     }
+    */
 
+    /*
     public void deleteCalendar(String calendarName) {
         //arbitrary method
         //deleteCalendarTable(calendarName);
         String[] whereArgs = {calendarName};
         db.delete(DBContract.CalendarList.TABLE_NAME, DBContract.CalendarList.COLUMN_NAME_CALENDARNAME+ "=?", whereArgs);
     }
+    */
 
     /**
      * Returns an arraylist of the calendarNames intended for easy calendar(Table) selection.
      */
+    /*
     public ArrayList<String> findAllCalendars() {
         String[] columns = {DBContract.CalendarList.COLUMN_NAME_CALENDARNAME};
         Cursor cursor = db.query(DBContract.CalendarList.TABLE_NAME, columns, null, null, null, null, null);
@@ -338,10 +443,12 @@ public class DBController {
         }
         return list;
     }
+    */
 
     /**
      * Handle CalendarEvent operations
      */
+    /*
     public long insertCalendarEvent(String date, int startH, int startM, int endH, int endM,
                                     String event){
         long id;
@@ -355,11 +462,13 @@ public class DBController {
         id = db.insert(DBContract.CalendarTable.TABLE_NAME, null, values);
         return id; // negative if something went wrong, is row index otherwise
     }
+    */
 
     /**
      * Returns a String of all events (including start and end time for each) for the date passed
      * in. Date passed in must be in form given by Caldroid Calendar.
      */
+    /*
     public String findAllCalendarEvents(String date) {
         String[] columns = {DBContract.CalendarTable.COLUMN_NAME_EVENT, DBContract.CalendarTable.COLUMN_NAME_STARTH,
                 DBContract.CalendarTable.COLUMN_NAME_STARTM, DBContract.CalendarTable.COLUMN_NAME_ENDH,
@@ -381,13 +490,16 @@ public class DBController {
         }
         return buffer.toString();
     }
+    */
 
     /**
      * Deletes all events for the Date sent in as argument. (Must be in same form Caldroid Calander
      * returns).
      */
+    /*
     public void deleteCalendarsEvents(String date) {
         String[] whereArgs = {date};
         db.delete(DBContract.CalendarTable.TABLE_NAME, DBContract.CalendarTable.COLUMN_NAME_DATE + "=?", whereArgs);
     }
+    */
 }
