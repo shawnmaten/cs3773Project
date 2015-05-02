@@ -1,5 +1,6 @@
 package com.marsdayjam.eventplanner;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
@@ -10,6 +11,8 @@ public class Event {
     private Date start;
     private Date end;
     private Employee manager;
+    private ArrayList<Employee> members = new ArrayList<>();
+    private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -72,5 +75,21 @@ public class Event {
         return String.format("Event: %s %s %s %s %s %s %s",
                 name, host, location, start.toString(), end.toString(), manager.getFirst(),
                 manager.getLast());
+    }
+
+    public ArrayList<Employee> getMembers() {
+        return members;
+    }
+
+    public void setMembers(ArrayList<Employee> members) {
+        this.members = members;
+    }
+
+    public ArrayList<CalendarEvent> getCalendarEvents() {
+        return calendarEvents;
+    }
+
+    public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
+        this.calendarEvents = calendarEvents;
     }
 }

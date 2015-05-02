@@ -22,10 +22,15 @@ public final class DBControllerTest extends AndroidTestCase {
 
     public static final String testTeamName = "Team";
     public static final String testTeamDuties = "Duties";
+
+    public static final String testCalendarEventDescription = "Description";
+    public static final String testCalendarEventStart = "May 6, 2015 12:00:00 PM";
+    public static final String testCalendarEventEnd = "May 6, 2015 2:30:00 PM";
     
     private Employee testEmployee;
     private Event testEvent;
     private Team testTeam;
+    private CalendarEvent testCalendarEvent;
     private DBController dbController;
 
     @Override
@@ -42,12 +47,7 @@ public final class DBControllerTest extends AndroidTestCase {
         testEmployee.setFirst(testFirst);
         testEmployee.setLast(testLast);
         testEmployee.setRoleCode(testRole);
-        testEmployee.setId(dbController.insertEmployee(
-                testEmail,
-                testPassword,
-                testFirst,
-                testLast,
-                testRole));
+        dbController.insertEmployee(testEmployee);
         assertTrue(testEmployee.getId() > 0);
 
         testEvent = new Event();
@@ -57,7 +57,7 @@ public final class DBControllerTest extends AndroidTestCase {
         testEvent.setStart(DateFormat.getDateTimeInstance().parse(testStart));
         testEvent.setEnd(DateFormat.getDateTimeInstance().parse(testEnd));
         testEvent.setManager(testEmployee);
-        testEvent.setId(dbController.insertEvent(testEvent));
+        dbController.insertEvent(testEvent);
         assertTrue(testEvent.getId() > 0);
 
         testTeam = new Team();
@@ -65,8 +65,15 @@ public final class DBControllerTest extends AndroidTestCase {
         testTeam.setSupervisor(testEmployee);
         testTeam.setName(testTeamName);
         testTeam.setDuties(testTeamDuties);
-        testTeam.setId(dbController.insertTeam(testTeam));
+        dbController.insertTeam(testTeam);
         assertTrue(testTeam.getId() > 0);
+
+        testCalendarEvent = new CalendarEvent();
+        testCalendarEvent.setDescription(testCalendarEventDescription);
+        testCalendarEvent.setStart(DateFormat.getDateTimeInstance()
+                .parse(testCalendarEventStart));
+        testCalendarEvent.setEnd(DateFormat.getDateTimeInstance()
+                .parse(testCalendarEventEnd));
     }
 
     @Override
@@ -75,17 +82,12 @@ public final class DBControllerTest extends AndroidTestCase {
     }
 
     public void testInsertEmployee() throws Exception {
-        assertTrue(dbController.insertEmployee(
-                testEmail,
-                testPassword,
-                testFirst,
-                testLast,
-                testRole) > 0);
+        assertTrue(dbController.insertEmployee(testEmployee) > 0);
     }
 
     public void testDeleteEmployee() throws Exception {
         assertNotNull(dbController.getEmployee(testEmployee.getId()));
-        dbController.deleteEmployee(testEmployee.getId());
+        dbController.deleteEmployee(testEmployee);
         assertNull(dbController.getEmployee(testEmployee.getId()));
     }
 
@@ -105,13 +107,11 @@ public final class DBControllerTest extends AndroidTestCase {
         assertNotNull(dbController.getEmployeeHelper(testProjection, testSelectionArgs));
     }
 
-    // by email
-    public void testGetEmployee() throws Exception {
+    public void testGetEmployeeEmail() throws Exception {
         assertNotNull(dbController.getEmployee(testEmail));
     }
 
-    // by id
-    public void testGetEmployee1() throws Exception {
+    public void testGetEmployeeId() throws Exception {
         assertNotNull(dbController.getEmployee(testEmployee.getId()));
     }
 
@@ -128,12 +128,28 @@ public final class DBControllerTest extends AndroidTestCase {
     }
 
     public void testDeleteEvent() throws Exception {
-        dbController.deleteEvent(testEvent.getId());
+        dbController.deleteEvent(testEvent);
         assertNull(dbController.getEvent(testEvent.getId()));
     }
 
     public void testGetEvent() throws Exception {
         assertNotNull(dbController.getEvent(testEvent.getId()));
+    }
+
+    public void testInsertEventMember() throws Exception {
+        assertTrue(dbController.insertEventMember(testEvent, testEmployee) > 0);
+    }
+
+    public void testDeleteEventMember() throws Exception {
+        dbController.insertEventMember(testEvent, testEmployee);
+        assertFalse(dbController.getEventMembers(testEvent).isEmpty());
+        dbController.deleteEventMember(testEvent, testEmployee);
+        assertTrue(dbController.getEventMembers(testEvent).isEmpty());
+    }
+
+    public void testGetEventMembers() throws Exception {
+        dbController.insertEventMember(testEvent, testEmployee);
+        assertFalse(dbController.getEventMembers(testEvent).isEmpty());
     }
 
     public void testInsertTeam() throws Exception {
@@ -142,11 +158,52 @@ public final class DBControllerTest extends AndroidTestCase {
 
     public void testDeleteTeam() throws Exception {
         assertNotNull(dbController.getTeam(testTeam.getId()));
-        dbController.deleteTeam(testTeam.getId());
+        dbController.deleteTeam(testTeam);
         assertNull(dbController.getTeam(testTeam.getId()));
     }
 
     public void testGetTeam() throws Exception {
         assertNotNull(dbController.getTeam(testTeam.getId()));
+    }
+
+    public void testInsertTeamMember() throws Exception {
+        assertTrue(dbController.insertTeamMember(testTeam, testEmployee) > 0);
+    }
+
+    public void testDeleteTeamMember() throws Exception {
+        dbController.insertTeamMember(testTeam, testEmployee);
+        assertFalse(dbController.getTeamMembers(testTeam).isEmpty());
+        dbController.deleteTeamMember(testTeam, testEmployee);
+        assertTrue(dbController.getTeamMembers(testTeam).isEmpty());
+    }
+
+    public void testGetTeamMembers() throws Exception {
+        dbController.insertTeamMember(testTeam, testEmployee);
+        assertFalse(dbController.getTeamMembers(testTeam).isEmpty());
+    }
+
+    public void testInsertCalendarEvent() throws Exception {
+        testCalendarEvent.setEmployee(testEmployee);
+        assertTrue(dbController.insertCalendarEvent(testCalendarEvent) > 0);
+    }
+
+    public void testDeleteCalendarEvent() throws Exception {
+        testCalendarEvent.setEmployee(testEmployee);
+        dbController.insertCalendarEvent(testCalendarEvent);
+        assertFalse(dbController.getCalendarEvents(testEmployee).isEmpty());
+        dbController.deleteCalendarEvent(testCalendarEvent);
+        assertTrue(dbController.getCalendarEvents(testEmployee).isEmpty());
+    }
+
+    public void testGetCalendarEventForEmployee() throws Exception {
+        testCalendarEvent.setEmployee(testEmployee);
+        dbController.insertCalendarEvent(testCalendarEvent);
+        assertFalse(dbController.getCalendarEvents(testEmployee).isEmpty());
+    }
+
+    public void testGetCalendarEventForEvent() throws Exception {
+        testCalendarEvent.setEvent(testEvent);
+        dbController.insertCalendarEvent(testCalendarEvent);
+        assertFalse(dbController.getCalendarEvents(testEvent).isEmpty());
     }
 }

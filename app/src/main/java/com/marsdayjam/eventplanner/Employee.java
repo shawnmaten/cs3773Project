@@ -1,5 +1,7 @@
 package com.marsdayjam.eventplanner;
 
+import java.util.ArrayList;
+
 public class Employee {
     private long id;
     private String email;
@@ -8,6 +10,7 @@ public class Employee {
     private String last;
     private int roleCode;
     private String roleTitle;
+    private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -69,5 +72,13 @@ public class Employee {
     public String toString() {
         return String.format("Employee: %d %s %s %s %s %d %s",
                 id, email, password, first, last, roleCode, roleTitle);
+    }
+
+    public ArrayList<CalendarEvent> getCalendarEvents() {
+        return calendarEvents;
+    }
+
+    public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
+        this.calendarEvents = calendarEvents;
     }
 }

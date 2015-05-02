@@ -1,11 +1,14 @@
 package com.marsdayjam.eventplanner;
 
+import java.util.ArrayList;
+
 public class Team {
     private long id;
     private Event event;
     private Employee supervisor;
     private String name;
     private String duties;
+    private ArrayList<Employee> members = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -45,5 +48,13 @@ public class Team {
 
     public void setDuties(String duties) {
         this.duties = duties;
+    }
+
+    public ArrayList<Employee> getMembers() {
+        return members;
+    }
+
+    public void setMembers(ArrayList<Employee> members) {
+        this.members = members;
     }
 }

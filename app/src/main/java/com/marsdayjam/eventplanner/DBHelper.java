@@ -9,6 +9,7 @@ import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
 import com.marsdayjam.eventplanner.DBContract.RolesTable;
 import com.marsdayjam.eventplanner.DBContract.CalendarTable;
 import com.marsdayjam.eventplanner.DBContract.EventTable;
+import com.marsdayjam.eventplanner.DBContract.EventMembersTable;
 import com.marsdayjam.eventplanner.DBContract.TeamTable;
 import com.marsdayjam.eventplanner.DBContract.TeamMembersTable;
 
@@ -47,6 +48,17 @@ public class DBHelper extends SQLiteOpenHelper {
                     EventTable.COLUMN_NAME_MANAGER_ID + TEXT_TYPE + CM +
                     " FOREIGN KEY " + LP + EventTable.COLUMN_NAME_MANAGER_ID + RP + " REFERENCES "
                         + EmployeeTable.TABLE_NAME + LP + EmployeeTable._ID + RP + RP;
+
+    private static final String CREATE_EVENT_MEMBERS =
+            "CREATE TABLE " + EventMembersTable.TABLE_NAME + LP +
+                    EventMembersTable._ID + " INTEGER PRIMARY KEY" + CM +
+                    EventMembersTable.COLUMN_NAME_EVENT_ID + INT_TYPE + CM +
+                    EventMembersTable.COLUMN_NAME_EMPLOYEE_ID + INT_TYPE + CM +
+                    " FOREIGN KEY " + LP + EventMembersTable.COLUMN_NAME_EVENT_ID + RP +
+                    " REFERENCES " + EventTable.TABLE_NAME + LP + EventTable._ID + RP +
+                    " FOREIGN KEY " + LP + EventMembersTable.COLUMN_NAME_EMPLOYEE_ID + RP +
+                    " REFERENCES " + EmployeeTable.TABLE_NAME + LP + EmployeeTable._ID + RP +
+                    RP;
 
     private static final String CREATE_TEAM =
             "CREATE TABLE " + TeamTable.TABLE_NAME + LP +
@@ -107,6 +119,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_EMPLOYEE);
         db.execSQL(CREATE_ROLES);
         db.execSQL(CREATE_EVENT);
+        db.execSQL(CREATE_EVENT_MEMBERS);
         db.execSQL(CREATE_TEAM);
         db.execSQL(CREATE_TEAM_MEMBERS);
         db.execSQL(CREATE_CALENDAR);
