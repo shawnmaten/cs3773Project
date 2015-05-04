@@ -12,5 +12,9 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="welcome">Welcome</string>
+    <string name="employee">employee</string>
+    <string name="role">role</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

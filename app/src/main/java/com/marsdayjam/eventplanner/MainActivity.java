@@ -16,9 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     private static final int LOG_IN_REQUEST = 0;
+
+    private String EMPLOYEE_FRAGMENT = "employeeFragment";
+    private String CALENDAR_FRAGMENT = "calendarFragment";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -29,14 +36,6 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (LoginActivity.getUser() != null)
-            Log.e("Logged In User: ", LoginActivity.getUser().toString());
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -51,11 +50,13 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FragmentManager fm = getSupportFragmentManager();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                fm.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -66,26 +67,66 @@ public class MainActivity extends ActionBarActivity
         if (LoginActivity.getUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, LOG_IN_REQUEST);
+        } else {
+            DBController dbController = DBController.getInstance(this);
+            CalendarEvent calendarEvent = new CalendarEvent();
+            DateFormat dateFormat = DateFormat.getDateTimeInstance();
+            Date start = new Date();
+            Date end = new Date();
+            try {
+                start = dateFormat.parse("May 6, 2015 12:00:00 PM");
+                end = dateFormat.parse("May 6, 2015 1:00:00 PM");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            calendarEvent.setDescription("Meeting with Nancy");
+            calendarEvent.setStart(start);
+            calendarEvent.setEnd(end);
+            calendarEvent.setEmployee(LoginActivity.getUser());
+            dbController.insertCalendarEvent(calendarEvent);
         }
     }
 
+    /*
+    private void setupFragments() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Employee user = LoginActivity.getUser();
+        Fragment fragment;
+
+        fragment = EmployeeFragment.newInstance(1, user.getId());
+        ft.add(R.id.container, fragment, EMPLOYEE_FRAGMENT);
+        fragment = CalendarFragment.newInstance(1, CalendarFragment.EMPLOYEE_TYPE, user.getId());
+        ft.add(R.id.container, fragment, CALENDAR_FRAGMENT);
+
+        ft.commit();
+        fm.executePendingTransactions();
+    }
+    */
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        if (LoginActivity.getUser() != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment fragment;
+        Employee user = LoginActivity.getUser();
+
+        if (user != null) {
             switch (position) {
                 case 0:
-                    fragmentTransaction.replace(
-                            R.id.container,
-                            EmployeeFragment.newInstance(position + 1));
+                    fragment = EmployeeFragment.newInstance(position+1, user.getId());
+                    ft.replace(R.id.container, fragment, EMPLOYEE_FRAGMENT);
+                    break;
+                case 1:
+                    fragment = CalendarFragment.newInstance(position+1,
+                            CalendarFragment.EMPLOYEE_TYPE, user.getId());
+                    ft.replace(R.id.container, fragment, CALENDAR_FRAGMENT);
                     break;
                 default:
-                    fragmentTransaction
-                            .replace(R.id.container, PlaceholderFragment.newInstance(position + 1));
+                    ft.replace(R.id.container, PlaceholderFragment.newInstance(position + 1));
                     break;
             }
-            fragmentTransaction.commit();
+            ft.commit();
         }
     }
 

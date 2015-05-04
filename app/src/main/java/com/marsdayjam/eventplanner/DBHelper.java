@@ -13,6 +13,9 @@ import com.marsdayjam.eventplanner.DBContract.EventMembersTable;
 import com.marsdayjam.eventplanner.DBContract.TeamTable;
 import com.marsdayjam.eventplanner.DBContract.TeamMembersTable;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+
 public class DBHelper extends SQLiteOpenHelper {
     private static final String TEXT_TYPE = " TEXT ";
     private static final String INT_TYPE = " INTEGER ";
@@ -126,7 +129,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(EmployeeTable.COLUMN_NAME_EMAIL, "celia.hodes@eventplanners.com");
-        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "celia1234");
+        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "celiaHodes1234");
         values.put(EmployeeTable.COLUMN_NAME_FIRST, "Celia");
         values.put(EmployeeTable.COLUMN_NAME_LAST, "Hodes");
         values.put(EmployeeTable.COLUMN_NAME_ROLE, 1);
@@ -134,7 +137,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(EmployeeTable.COLUMN_NAME_EMAIL, "nancy.botwin@eventplanners.com");
-        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "nancy1234");
+        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "nancyBotwin1234");
         values.put(EmployeeTable.COLUMN_NAME_FIRST, "Nancy");
         values.put(EmployeeTable.COLUMN_NAME_LAST, "Botwin");
         values.put(EmployeeTable.COLUMN_NAME_ROLE, 2);
@@ -142,7 +145,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(EmployeeTable.COLUMN_NAME_EMAIL, "andy.botwin@eventplanners.com");
-        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "andy1234");
+        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, "andyBotwin1234");
         values.put(EmployeeTable.COLUMN_NAME_FIRST, "Andy");
         values.put(EmployeeTable.COLUMN_NAME_LAST, "Botwin");
         values.put(EmployeeTable.COLUMN_NAME_ROLE, 3);

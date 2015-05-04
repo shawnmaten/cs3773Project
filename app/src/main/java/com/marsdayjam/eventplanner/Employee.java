@@ -1,5 +1,7 @@
 package com.marsdayjam.eventplanner;
 
+import android.os.Parcel;
+
 import java.util.ArrayList;
 
 public class Employee {
