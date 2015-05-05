@@ -41,6 +41,8 @@ public class AddCalendarEventFragment extends Fragment{
         add.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
+                //need to fix reading in data
+                /*
                 text = (EditText) v.findViewById(R.id.addCalendarEvent);
                 event = text.toString();
                 if(event.isEmpty())
@@ -91,13 +93,18 @@ public class AddCalendarEventFragment extends Fragment{
                         endH = 23;
                         endM = 59;
                         //do something with these values representing all day event and the event message
+
+
+                        //return to calendar
+                        remove();
                     }
 
                     //is incorrect input
                     else{
 
                     }
-                }
+                }*/
+                remove();
             }
         });
 
@@ -117,7 +124,6 @@ public class AddCalendarEventFragment extends Fragment{
     public void remove(){
         eventEntered = Boolean.FALSE;
         timeEntered = Boolean.FALSE;
-        //arbitrary method to go back to calendarOptions fragment
         calendarFragment.recreate(this);
     }
 }

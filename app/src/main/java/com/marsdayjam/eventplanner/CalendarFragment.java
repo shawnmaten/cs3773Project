@@ -139,7 +139,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
         FragmentTransaction ft = cfm.beginTransaction();
         ft.remove(calendarOptions);
         ft.remove(caldroidFragment);
-        EditCalendarEventsFragment editCalEvent = new EditCalendarEventsFragment();
+        EditCalendarEventsFragment editCalEvent = new EditCalendarEventsFragment(this);
         this.editCalEvent = editCalEvent;
         ft.add(R.id.calendar, editCalEvent);
         ft.commit();
