@@ -23,11 +23,14 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
     private static final String ARG_ID = "id";
     public static final int EMPLOYEE_TYPE = 0;
     public static final int EVENT_TYPE = 1;
-    private static Boolean dateSelected = Boolean.FALSE;
-    private static String selectedDate;
+
+    private Date selectedDate;
+    private ArrayList<CalendarEvent> events;
     CaldroidFragment caldroidFragment;
+
+    // TODO review these
+    private static Boolean dateSelected = Boolean.FALSE;
     private static Date prevDate;
-    private CalendarOptionsFragment calendarOptions;
     static Context context;
     private AddCalendarEventFragment addCalEvent;
     private EditCalendarEventsFragment editCalEvent;
@@ -43,20 +46,26 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
         return fragment;
     }
 
+    public Date getSelectedDate() {
+        return selectedDate;
+    }
+
+    public ArrayList<CalendarEvent> getEvents() {
+        return events;
+    }
+
     public CalendarFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        CaldroidFragment fragment;
         Bundle fragmentArgs = new Bundle();
         Calendar cal = Calendar.getInstance();
         FragmentManager cfm = getChildFragmentManager();
         FragmentTransaction ft = cfm.beginTransaction();
         DBController dbController = DBController.getInstance(getActivity());
         Bundle calendarArgs = getArguments();
-        ArrayList<CalendarEvent> events;
 
         super.onCreate(savedInstanceState);
 
@@ -67,37 +76,32 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
             events = dbController.getEvent(calendarArgs.getLong(ARG_ID)).getCalendarEvents();
 
         if (savedInstanceState == null) {
-            fragment = new CaldroidFragment();
+            caldroidFragment = new CaldroidFragment();
             calendarArgs.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
             calendarArgs.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
-            fragment.setArguments(calendarArgs);
-            this.caldroidFragment = fragment;
-            CalendarOptionsFragment calendarOptions = new CalendarOptionsFragment(this, context);
-            this.calendarOptions = calendarOptions;
-            ft.add(R.id.calendar, calendarOptions);
-            ft.add(R.id.calendar, fragment, CALENDAR_FRAGMENT);
+            caldroidFragment.setArguments(calendarArgs);
+
+            ft.add(R.id.calendar, caldroidFragment, CALENDAR_FRAGMENT);
+            ft.add(R.id.options, new CalendarOptionsFragment());
             ft.commit();
             cfm.executePendingTransactions();
         } else {
-            fragment = (CaldroidFragment) cfm.findFragmentByTag(CALENDAR_FRAGMENT);
+            caldroidFragment = (CaldroidFragment) cfm.findFragmentByTag(CALENDAR_FRAGMENT);
         }
 
         for (CalendarEvent event : events) {
-            fragment.setBackgroundResourceForDate(R.color.green, event.getStart());
-            fragment.setBackgroundResourceForDate(R.color.green, event.getEnd());
+            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getStart());
+            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getEnd());
         }
 
         caldroidFragment.setCaldroidListener(new CaldroidListener() {
 
             @Override
             public void onSelectDate(Date date, View view) {
-                if (dateSelected == Boolean.TRUE)
-                    caldroidFragment.clearBackgroundResourceForDate(prevDate);
-                dateSelected = Boolean.TRUE;
-                calendarOptions.setDateSelected(Boolean.TRUE);
-                prevDate = date;
-                selectedDate = date.toString();
-                caldroidFragment.setBackgroundResourceForDate(R.color.yellow, date);
+                if (selectedDate != null)
+                    caldroidFragment.clearBackgroundResourceForDate(selectedDate);
+                selectedDate = date;
+                caldroidFragment.setBackgroundResourceForDate(R.color.orange, date);
                 caldroidFragment.refreshView();
             }
 
@@ -126,7 +130,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
     public void addEvent(){
         FragmentManager cfm = getChildFragmentManager();
         FragmentTransaction ft = cfm.beginTransaction();
-        ft.remove(calendarOptions);
+        //ft.remove(calendarOptions);
         ft.remove(caldroidFragment);
         AddCalendarEventFragment addCalEvent = new AddCalendarEventFragment(this);
         this.addCalEvent = addCalEvent;
@@ -137,7 +141,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
     public void viewEvent(){
         FragmentManager cfm = getChildFragmentManager();
         FragmentTransaction ft = cfm.beginTransaction();
-        ft.remove(calendarOptions);
+        //ft.remove(calendarOptions);
         ft.remove(caldroidFragment);
         EditCalendarEventsFragment editCalEvent = new EditCalendarEventsFragment(this);
         this.editCalEvent = editCalEvent;
@@ -151,7 +155,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
         FragmentTransaction ft = cfm.beginTransaction();
         ft.remove(fragment);
         ft.add(R.id.calendar, caldroidFragment);
-        ft.add(R.id.calendar, calendarOptions);
+        //ft.add(R.id.calendar, calendarOptions);
         ft.commit();
     }
 }

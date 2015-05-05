@@ -15,6 +15,9 @@
     <string name="employee">employee</string>
     <string name="role">role</string>
 
+    <string name="add_event">Add Event</string>
+    <string name="view_events">View Events</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -3,32 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true">
-    android:id = "@+id/fragment_calander_options"
 
-    <Button
+    <Space
+        android:id="@+id/center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:id="@+id/editCalendar"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        android:enabled="true" />
+        android:layout_centerInParent="true"/>
 
     <Button
+        android:id="@+id/add_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View/Delete"
-        android:id="@+id/viewEvents"
-        android:layout_alignTop="@+id/editCalendar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="51dp"
-        android:layout_marginEnd="51dp"
-        android:clickable="true"
-        android:enabled="true" />
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/center"
+        android:layout_toStartOf="@id/center"
+        android:text="@string/add_event"/>
+
+    <Button
+        android:id="@+id/view_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/center"
+        android:layout_toEndOf="@id/center"
+        android:text="@string/view_events"/>
 </RelativeLayout>
