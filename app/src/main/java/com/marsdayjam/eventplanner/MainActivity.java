@@ -1,6 +1,7 @@
 package com.marsdayjam.eventplanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -105,7 +106,8 @@ public class MainActivity extends ActionBarActivity
     */
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+        public void onNavigationDrawerItemSelected(int position) {
+        Context context = getApplicationContext();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment;
@@ -119,7 +121,7 @@ public class MainActivity extends ActionBarActivity
                     break;
                 case 1:
                     fragment = CalendarFragment.newInstance(position+1,
-                            CalendarFragment.EMPLOYEE_TYPE, user.getId());
+                            CalendarFragment.EMPLOYEE_TYPE, user.getId(), context);
                     ft.replace(R.id.container, fragment, CALENDAR_FRAGMENT);
                     break;
                 default:
