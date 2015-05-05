@@ -32,9 +32,9 @@ public class EditCalendarEventsFragment extends Fragment{
                 //do deleteing operations
 
 
-
+                      remove();
                 //return to calendar
-                remove();
+
 
             }
         });

@@ -112,6 +112,7 @@ public class MainActivity extends ActionBarActivity
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment;
         Employee user = LoginActivity.getUser();
+        EventFragment eventFragment = new EventFragment(context);
 
         if (user != null) {
             switch (position) {
@@ -125,7 +126,7 @@ public class MainActivity extends ActionBarActivity
                     ft.replace(R.id.container, fragment, CALENDAR_FRAGMENT);
                     break;
                 default:
-                    ft.replace(R.id.container, PlaceholderFragment.newInstance(position + 1));
+                    ft.replace(R.id.container, eventFragment);
                     break;
             }
             ft.commit();

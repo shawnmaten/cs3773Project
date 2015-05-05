@@ -3,7 +3,7 @@
 
     <string name="title_section1">Actions</string>
     <string name="title_section2">Calendar</string>
-    <string name="title_section3">(empty)</string>
+    <string name="title_section3">Events</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
