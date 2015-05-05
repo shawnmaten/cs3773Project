@@ -2,6 +2,7 @@ package com.marsdayjam.eventplanner;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -144,23 +145,13 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
         ft.commit();
     }
 
-    // 1 if coming back from AddCalenderEventFragment, 1 if coming back from EditCalendarEvents
-    public void recreate(int i){
+    // 1 if coming back from AddCalenderEventFragment, 2 if coming back from EditCalendarEvents
+    public void recreate(Fragment fragment){
         FragmentManager cfm = getChildFragmentManager();
         FragmentTransaction ft = cfm.beginTransaction();
-        switch(i){
-            case 1:
-                ft.remove(addCalEvent);
-                ft.add(R.id.calendar, this);
-                ft.add(R.id.calendar, calendarOptions);
-                ft.commit();
-                break;
-            case 2:
-                ft.remove(editCalEvent);
-                ft.add(R.id.calendar, this);
-                ft.add(R.id.calendar, calendarOptions);
-                ft.commit();
-                break;
-        }
+        ft.remove(fragment);
+        ft.add(R.id.calendar, caldroidFragment);
+        ft.add(R.id.calendar, calendarOptions);
+        ft.commit();
     }
 }

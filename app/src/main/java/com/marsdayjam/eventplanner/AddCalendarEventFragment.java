@@ -118,6 +118,6 @@ public class AddCalendarEventFragment extends Fragment{
         eventEntered = Boolean.FALSE;
         timeEntered = Boolean.FALSE;
         //arbitrary method to go back to calendarOptions fragment
-        calendarFragment.recreate(1);
+        calendarFragment.recreate(this);
     }
 }
