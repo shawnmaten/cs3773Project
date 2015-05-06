@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    android:id="@+id/eventFragment""
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/eventStart"
+        android:text="Start"
+        android:layout_below="@+id/eventLocation"
+        android:layout_alignLeft="@+id/eventLocation"
+        android:layout_alignStart="@+id/eventLocation"
+        android:editable="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Host"
+        android:ems="10"
+        android:id="@+id/hostName"
+        android:layout_below="@+id/eventName"
+        android:layout_centerHorizontal="true"
+        android:editable="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:ems="10"
+        android:id="@+id/eventLocation"
+        android:text="Location"
+        android:layout_below="@+id/hostName"
+        android:layout_centerHorizontal="true"
+        android:editable="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/eventEnd"
+        android:text="End"
+        android:layout_below="@+id/eventStart"
+        android:layout_alignLeft="@+id/eventStart"
+        android:layout_alignStart="@+id/eventStart"
+        android:editable="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/eventName"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:editable="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/events"
+        android:layout_below="@+id/eventEnd"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="81dp"
+        android:clickable="true"
+        android:focusable="false"
+        android:visibility="visible"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Event"
+        android:id="@+id/addEvent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:visibility="visible" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/removeEvent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teams"
+        android:id="@+id/eventTeams"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/eventManagerID"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/eventEnd"
+        android:layout_alignStart="@+id/eventEnd"
+        android:text="Manager ID"
+        android:editable="true" />
+
+</RelativeLayout>

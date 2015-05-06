@@ -1,6 +1,7 @@
 package com.marsdayjam.eventplanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,12 +10,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.marsdayjam.eventplanner.Calendar.CalendarFragment;
+import com.marsdayjam.eventplanner.DB.DBContract;
+import com.marsdayjam.eventplanner.Employee.Employee;
+import com.marsdayjam.eventplanner.Employee.EmployeeFragment;
+import com.marsdayjam.eventplanner.Employee.HRFragment;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -31,14 +37,6 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (LoginActivity.getUser() != null)
-            Log.e("Logged In User: ", LoginActivity.getUser().toString());
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -51,11 +49,13 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FragmentManager fm = getSupportFragmentManager();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                fm.findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -70,22 +70,40 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        if (LoginActivity.getUser() != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        public void onNavigationDrawerItemSelected(int position) {
+        Context context = getApplicationContext();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment fragment;
+        Employee user = LoginActivity.getUser();
+
+        if (user != null) {
             switch (position) {
                 case 0:
-                    fragmentTransaction.replace(
-                            R.id.container,
-                            EmployeeFragment.newInstance(position + 1));
+                    fragment = EmployeeFragment.newInstance(1, user.getId());
+                    ft.replace(R.id.container, fragment);
+                    break;
+                case 1:
+                    fragment = CalendarFragment.newInstance(2, CalendarFragment.EMPLOYEE_TYPE,
+                            user.getId(), context);
+                    ft.replace(R.id.container, fragment);
+                    break;
+                case 2:
+                    if (user.getRoleCode() == DBContract.RolesTable.HR) {
+                        fragment = HRFragment.newInstance(3);
+                    } else {
+                        fragment = EventFragment2.newInstance(
+                                3,
+                                user.getRoleCode() == DBContract.RolesTable.MG
+                                        ? EventFragment2.TYPE_MANAGER :
+                                        EventFragment2.TYPE_EMPLOYEE,
+                                user.getId());
+                    }
                     break;
                 default:
-                    fragmentTransaction
-                            .replace(R.id.container, PlaceholderFragment.newInstance(position + 1));
-                    break;
+                    fragment = PlaceholderFragment.newInstance(-1);
             }
-            fragmentTransaction.commit();
+            ft.replace(R.id.container, fragment).commit();
         }
     }
 
@@ -100,6 +118,8 @@ public class MainActivity extends ActionBarActivity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+            default:
+                mTitle = getString(R.string.untitled);
         }
     }
 

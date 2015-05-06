@@ -2,6 +2,10 @@ package com.marsdayjam.eventplanner;
 
 import android.test.AndroidTestCase;
 
+import com.marsdayjam.eventplanner.DB.DBContract;
+import com.marsdayjam.eventplanner.DB.DBController;
+import com.marsdayjam.eventplanner.Employee.Employee;
+
 import java.util.List;
 
 public class DBControllerTest extends AndroidTestCase {

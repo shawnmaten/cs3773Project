@@ -1,19 +1,24 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Employee;
+
+import com.marsdayjam.eventplanner.Calendar.CalendarEvent;
+
+import java.util.ArrayList;
 
 public class Employee {
-    private int id;
+    private long id;
     private String email;
     private String password;
     private String first;
     private String last;
-    private int roleCode;
+    private long roleCode;
     private String roleTitle;
+    private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -49,11 +54,11 @@ public class Employee {
         this.last = last;
     }
 
-    public int getRoleCode() {
+    public long getRoleCode() {
         return roleCode;
     }
 
-    public void setRoleCode(int roleCode) {
+    public void setRoleCode(long roleCode) {
         this.roleCode = roleCode;
     }
 
@@ -69,5 +74,13 @@ public class Employee {
     public String toString() {
         return String.format("Employee: %d %s %s %s %s %d %s",
                 id, email, password, first, last, roleCode, roleTitle);
+    }
+
+    public ArrayList<CalendarEvent> getCalendarEvents() {
+        return calendarEvents;
+    }
+
+    public void setCalendarEvents(ArrayList<CalendarEvent> calendarEvents) {
+        this.calendarEvents = calendarEvents;
     }
 }
