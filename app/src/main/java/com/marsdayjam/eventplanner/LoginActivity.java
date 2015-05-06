@@ -37,6 +37,10 @@ import java.util.List;
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     public static final int LOG_IN_REQUEST = 0;
 
+    public static void setUser(Employee user) {
+        LoginActivity.user = user;
+    }
+
     private static Employee user = null;
 
     /**
