@@ -40,7 +40,7 @@ public final class DBContract {
     // Table for associating employees to events.
     public static abstract class EventMembersTable implements BaseColumns {
         public static final String TABLE_NAME = "event_members";
-        public static final String COLUMN_NAME_EVENT_ID = "team_id";
+        public static final String COLUMN_NAME_EVENT_ID = "event_id";
         public static final String COLUMN_NAME_EMPLOYEE_ID = "employee_id";
     }
 

@@ -307,11 +307,11 @@ public class DBController {
                     DBContract.EventTable.COLUMN_NAME_HOST)));
             event.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_LOCATION)));
-            event.setStart(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setStart(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_START))));
-            event.setEnd(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setEnd(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_END))));
-            event.setManager(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setManager(getEmployee(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_MANAGER_ID))));
         }
         cursor.close();
@@ -319,7 +319,7 @@ public class DBController {
     }
 
     // Gets all Events for a manager.
-    public ArrayList<Event> getEvents(Employee manager) {
+    public ArrayList<Event> getEventsForManager(Employee manager) {
         String selection = DBContract.EventTable.COLUMN_NAME_MANAGER_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(manager.getId())
@@ -344,7 +344,7 @@ public class DBController {
                 sortOrder
         );
         ArrayList<Event> events = new ArrayList<>();
-        if(cursor.moveToFirst()){
+        while (cursor.moveToNext()){
             Event event = new Event();
             event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.EventTable._ID)));
             event.setName(cursor.getString(cursor.getColumnIndexOrThrow(
@@ -353,13 +353,44 @@ public class DBController {
                     DBContract.EventTable.COLUMN_NAME_HOST)));
             event.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_LOCATION)));
-            event.setStart(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setStart(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_START))));
-            event.setEnd(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setEnd(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_END))));
-            event.setManager(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
+            event.setManager(getEmployee(cursor.getLong(cursor.getColumnIndexOrThrow(
                     DBContract.EventTable.COLUMN_NAME_MANAGER_ID))));
             event.setCalendarEvents(getCalendarEvents(event));
+            events.add(event);
+        }
+        cursor.close();
+        return events;
+    }
+
+    // Gets all Events for an employee.
+    public ArrayList<Event> getEventsForEmployee(Employee employee) {
+        String selection = DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
+        String selectionArgs[] = {
+                Long.toString(employee.getId())
+        };
+        String[] projection = {
+                DBContract.EventMembersTable._ID,
+                DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID,
+                DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID
+        };
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
+        Cursor cursor = db.query(
+                DBContract.EventMembersTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        ArrayList<Event> events = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            Event event = getEvent(cursor.getLong(
+                    cursor.getColumnIndex(DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID)));
             events.add(event);
         }
         cursor.close();

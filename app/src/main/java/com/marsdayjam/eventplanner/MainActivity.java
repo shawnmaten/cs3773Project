@@ -92,7 +92,12 @@ public class MainActivity extends ActionBarActivity
                     if (user.getRoleCode() == DBContract.RolesTable.HR) {
                         fragment = HRFragment.newInstance(3);
                     } else {
-                        fragment = new EventFragment(context);
+                        fragment = EventFragment2.newInstance(
+                                3,
+                                user.getRoleCode() == DBContract.RolesTable.MG
+                                        ? EventFragment2.TYPE_MANAGER :
+                                        EventFragment2.TYPE_EMPLOYEE,
+                                user.getId());
                     }
                     break;
                 default:
