@@ -1,5 +1,6 @@
 package com.marsdayjam.eventplanner;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,17 +12,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Beaster on 5/5/2015.
  */
 public class EventFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
+    private Date startD, endD;
     private Spinner spinner;
     private static String[] events;
     private ArrayList<String> ev;
@@ -36,7 +41,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     private View view;
     private Button add, team, delete;
     private TeamFragment teamFragment;
-    ViewGroup container;
+    final DateFormat dfDate = DateFormat.getDateInstance();
 
 
     public EventFragment(Context context){
@@ -45,9 +50,10 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     }
 
     public View onCreateView( LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        this.container = container;
         setDropDownList();
         View view = inflater.inflate(R.layout.fragment_event, container, false);
+        final EditText endDate = (EditText) view.findViewById(R.id.eventEnd);
+        final EditText startDate = (EditText) view.findViewById(R.id.eventStart);
         spinner = (Spinner)view.findViewById(R.id.events);
         adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, events);
         spinner.setAdapter(adapter);
@@ -76,16 +82,49 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
         team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager cfm = getChildFragmentManager();
-                FragmentTransaction ft = cfm.beginTransaction();
-                TeamFragment teamFragment = new TeamFragment(EventFragment.this);
-                EventFragment.this.teamFragment = teamFragment;
-                ft.remove(EventFragment.this);
-                ft.add(container.getId(), teamFragment);
-                ft.commit();
-                cfm.executePendingTransactions();
             }
         });
+        endD = new Date();
+        startD = new Date();
+        endDate.setText(dfDate.format(endD));
+        startDate.setText(dfDate.format(startD));
+        endDate.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                getChildFragmentManager().beginTransaction().add(
+                        new DatePickerFragment(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                endD.setYear(i - 1900);
+                                endD.setMonth(i1);
+                                endD.setDate(i2);
+                                endDate.setText(dfDate.format(endD));
+                            }
+                        }),
+                        null
+                ).commit();
+            }
+        });
+        startDate.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                    getChildFragmentManager().beginTransaction().add(
+                            new DatePickerFragment(new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                    startD.setYear(i - 1900);
+                                    startD.setMonth(i1);
+                                    startD.setDate(i2);
+                                    startDate.setText(dfDate.format(startD));
+                                }
+                            }),
+                            null
+                    ).commit();
+            }
+        });
+
         this.view = view;
         return view;
     }
@@ -179,8 +218,6 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             case 2:
                 FragmentManager cfm = getChildFragmentManager();
                 FragmentTransaction ft = cfm.beginTransaction();
-                ft.remove(teamFragment);
-                ft.add(container.getId(), this);
                 ft.commit();
                 cfm.executePendingTransactions();
                 break;

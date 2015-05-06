@@ -14,7 +14,10 @@
         android:layout_below="@+id/eventLocation"
         android:layout_alignLeft="@+id/eventLocation"
         android:layout_alignStart="@+id/eventLocation"
-        android:editable="true" />
+        android:editable="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="false" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -48,7 +51,10 @@
         android:layout_below="@+id/eventStart"
         android:layout_alignLeft="@+id/eventStart"
         android:layout_alignStart="@+id/eventStart"
-        android:editable="true" />
+        android:editable="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="false" />
 
     <EditText
         android:layout_width="wrap_content"

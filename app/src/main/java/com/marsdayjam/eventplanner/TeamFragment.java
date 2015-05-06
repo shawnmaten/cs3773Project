@@ -18,6 +18,7 @@ public class TeamFragment extends Fragment{
     public TeamFragment(EventFragment eventFragment){
         this.eventFragment = eventFragment;
     }
+
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_team, container, false);
         back = (Button) view.findViewById (R.id.addEvent);
