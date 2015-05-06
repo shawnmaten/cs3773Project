@@ -1,129 +1,116 @@
 package com.marsdayjam.eventplanner;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
-import static android.view.View.OnClickListener;
+import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.util.Date;
 
-public class AddCalendarEventFragment extends Fragment{
+public class AddCalendarEventFragment extends DialogFragment {
+    private Date start, end;
+    private CalendarFragment parent;
+    private TextView description;
 
-    private static Boolean eventEntered = false;
-    private static Boolean timeEntered = false;
-    private static Button add, cancel;
-    private static String date;
-    private static String startTime;
-    private static String endTime;
-    private static int startH;
-    private static int startM;
-    private static int endH;
-    private static int endM;
-    private static String event = "";
-    private static EditText text;
-    private static Boolean correctTime = Boolean.TRUE;
-    private CalendarFragment calendarFragment;
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = getActivity().getLayoutInflater()
+                .inflate(R.layout.fragment_add_calendar_event, null);
+        final TextView startDate = (TextView) view.findViewById(R.id.start_date);
+        final TextView startTime = (TextView) view.findViewById(R.id.start_time);
+        final TextView endDate = (TextView) view.findViewById(R.id.end_date);
+        final TextView endTime = (TextView) view.findViewById(R.id.end_time);
+        description = (TextView) view.findViewById(R.id.description);
+        parent = ((CalendarFragment) getParentFragment().getParentFragment());
 
-    //Constructor, pass in necessary arguments such as date
-    public AddCalendarEventFragment(CalendarFragment calendarFragment){
-        this.calendarFragment = calendarFragment;
-    }
+        final DateFormat dfDate = DateFormat.getDateInstance();
+        DateFormat dfTime = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_calendar_event, container, false);
-        add = (Button) view.findViewById (R.id.addCalendarEvent);
-        add.setOnClickListener(new OnClickListener(){
+        if (parent.getSelectedDate() != null) {
+            start = new Date(parent.getSelectedDate().getTime());
+            end = new Date(parent.getSelectedDate().getTime());
+            start.setHours(new Date().getHours());
+        }
+        else {
+            start = new Date();
+            end = new Date();
+        }
+        end.setHours(new Date().getHours() + 1);
+
+        startDate.setText(dfDate.format(start));
+        startTime.setText(dfTime.format(start));
+        endTime.setText(dfTime.format(end));
+        endDate.setText(dfDate.format(end));
+
+        startDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //need to fix reading in data
-                /*
-                text = (EditText) v.findViewById(R.id.addCalendarEvent);
-                event = text.toString();
-                if(event.isEmpty())
-                    eventEntered = Boolean.FALSE;
-
-                //take care of an invalid Time insertions
-                text = (EditText) v.findViewById(R.id.start);
-                startTime = text.toString();
-                text = (EditText) v.findViewById(R.id.end);
-                endTime = text.toString();
-                if(startTime.isEmpty() && endTime.isEmpty()){
-                    timeEntered = Boolean.FALSE;
-                }
-                else if(startTime.isEmpty() ^ endTime.isEmpty()){
-                    timeEntered = Boolean.TRUE;
-                    correctTime = Boolean.FALSE;
-                }
-                else if(startTime.contains(":") == false || endTime.contains(":") == false) {
-                    timeEntered = Boolean.TRUE;
-                    correctTime = Boolean.FALSE;
-                }
-                else{
-                    String sTimes[] = startTime.split(":");
-                    String eTimes[] = endTime.split(":");
-                    timeEntered = Boolean.TRUE;
-                    if(sTimes.length > 2 || eTimes.length > 2) {
-                        correctTime = Boolean.FALSE;
-                    }
-                    else {
-                        startH = Integer.parseInt(sTimes[0]);
-                        startM = Integer.parseInt(sTimes[1]);
-                        endH = Integer.parseInt(eTimes[0]);
-                        endM = Integer.parseInt(eTimes[1]);
-                        if(24 < startH || 0 > startH || 0 > startM || 59 < startM ||
-                                24 < endH || 0 > endH || 0 > endM || 59 < endM){
-                            correctTime = Boolean.FALSE;
-                        }
-                    }
-                }
-
-                if(eventEntered == true){
-                    if(timeEntered == Boolean.TRUE && correctTime == Boolean.TRUE){
-                        //do something with the correct time values and the event message
-                    }
-                    else if( correctTime == Boolean.TRUE ){
-                        startH = 0;
-                        startM = 0;
-                        endH = 23;
-                        endM = 59;
-                        //do something with these values representing all day event and the event message
-
-
-                        //return to calendar
-                        remove();
-                    }
-
-                    //is incorrect input
-                    else{
-
-                    }
-                }*/
-                remove();
+            public void onClick(View view) {
+                getChildFragmentManager().beginTransaction().add(
+                        new DatePickerFragment(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                start.setYear(i - 1900);
+                                start.setMonth(i1);
+                                start.setDate(i2);
+                                startDate.setText(dfDate.format(start));
+                            }
+                        }),
+                        null
+                ).commit();
             }
         });
 
-
-        cancel = (Button) view.findViewById (R.id.cancelCalendarEdit);
-        cancel.setOnClickListener(new OnClickListener() {
+        endDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                remove();
+            public void onClick(View view) {
+                getChildFragmentManager().beginTransaction().add(
+                        new DatePickerFragment(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                end.setYear(i - 1900);
+                                end.setMonth(i1);
+                                end.setDate(i2);
+                                endDate.setText(dfDate.format(start));
+                            }
+                        }),
+                        null
+                ).commit();
             }
         });
 
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-        return view;
-    }
-
-    public void remove(){
-        eventEntered = Boolean.FALSE;
-        timeEntered = Boolean.FALSE;
-        calendarFragment.recreate(this);
+                    }
+                })
+                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        CalendarEvent event = new CalendarEvent();
+                        DBController dbController = DBController.getInstance(getActivity());
+                        event.setDescription(description.getText().toString());
+                        event.setStart(start);
+                        event.setEnd(end);
+                        if (parent.getType() == CalendarFragment.EMPLOYEE_TYPE)
+                            event.setEmployee(dbController.getEmployee(parent.getTypeId()));
+                        else
+                            event.setEvent(dbController.getEvent(parent.getTypeId()));
+                        dbController.insertCalendarEvent(event);
+                    }
+                })
+                .create();
     }
 }

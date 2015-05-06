@@ -127,35 +127,12 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
-    public void addEvent(){
-        FragmentManager cfm = getChildFragmentManager();
-        FragmentTransaction ft = cfm.beginTransaction();
-        //ft.remove(calendarOptions);
-        ft.remove(caldroidFragment);
-        AddCalendarEventFragment addCalEvent = new AddCalendarEventFragment(this);
-        this.addCalEvent = addCalEvent;
-        ft.add(R.id.calendar, addCalEvent);
-        ft.commit();
+    public int getType() {
+        return getArguments().getInt(ARG_TYPE);
     }
 
-    public void viewEvent(){
-        FragmentManager cfm = getChildFragmentManager();
-        FragmentTransaction ft = cfm.beginTransaction();
-        //ft.remove(calendarOptions);
-        ft.remove(caldroidFragment);
-        EditCalendarEventsFragment editCalEvent = new EditCalendarEventsFragment(this);
-        this.editCalEvent = editCalEvent;
-        ft.add(R.id.calendar, editCalEvent);
-        ft.commit();
+    public long getTypeId() {
+        return getArguments().getLong(ARG_ID);
     }
 
-    // 1 if coming back from AddCalenderEventFragment, 2 if coming back from EditCalendarEvents
-    public void recreate(Fragment fragment){
-        FragmentManager cfm = getChildFragmentManager();
-        FragmentTransaction ft = cfm.beginTransaction();
-        ft.remove(fragment);
-        ft.add(R.id.calendar, caldroidFragment);
-        //ft.add(R.id.calendar, calendarOptions);
-        ft.commit();
-    }
 }

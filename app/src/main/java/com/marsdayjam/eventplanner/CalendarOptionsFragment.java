@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.Date;
-
 import static android.view.View.OnClickListener;
 
 public class CalendarOptionsFragment extends Fragment {
+    private static final String ADD_FRAGMENT = "addFragment";
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final CalendarFragment calendarFragment = (CalendarFragment) getParentFragment();
@@ -19,10 +19,9 @@ public class CalendarOptionsFragment extends Fragment {
         root.findViewById (R.id.add_event).setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
-                Date selectedDate = calendarFragment.getSelectedDate();
-                Toast.makeText(getActivity(),
-                        selectedDate != null ? selectedDate.toString() : "NULL",
-                        Toast.LENGTH_SHORT).show();
+                getChildFragmentManager().beginTransaction()
+                        .add(new AddCalendarEventFragment(), ADD_FRAGMENT)
+                        .commit();
             }
         });
         root.findViewById (R.id.view_events).setOnClickListener(new OnClickListener(){
