@@ -17,7 +17,9 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/center"
         android:layout_toStartOf="@id/center"
-        android:text="@string/add_event"/>
+        android:text="@string/add_event"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <Button
         android:id="@+id/view_events"
@@ -26,5 +28,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/center"
         android:layout_toEndOf="@id/center"
-        android:text="@string/view_events"/>
+        android:text="@string/view_events"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 </RelativeLayout>

@@ -10,12 +10,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.marsdayjam.eventplanner.Calendar.CalendarFragment;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -68,23 +69,6 @@ public class MainActivity extends ActionBarActivity
         if (LoginActivity.getUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, LOG_IN_REQUEST);
-        } else {
-            DBController dbController = DBController.getInstance(this);
-            CalendarEvent calendarEvent = new CalendarEvent();
-            DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            Date start = new Date();
-            Date end = new Date();
-            try {
-                start = dateFormat.parse("May 6, 2015 12:00:00 PM");
-                end = dateFormat.parse("May 6, 2015 1:00:00 PM");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            calendarEvent.setDescription("Meeting with Nancy");
-            calendarEvent.setStart(start);
-            calendarEvent.setEnd(end);
-            calendarEvent.setEmployee(LoginActivity.getUser());
-            dbController.insertCalendarEvent(calendarEvent);
         }
     }
 
@@ -121,7 +105,7 @@ public class MainActivity extends ActionBarActivity
                     ft.replace(R.id.container, fragment, EMPLOYEE_FRAGMENT);
                     break;
                 case 1:
-                    fragment = CalendarFragment.newInstance(position+1,
+                    fragment = CalendarFragment.newInstance(position + 1,
                             CalendarFragment.EMPLOYEE_TYPE, user.getId(), context);
                     ft.replace(R.id.container, fragment, CALENDAR_FRAGMENT);
                     break;

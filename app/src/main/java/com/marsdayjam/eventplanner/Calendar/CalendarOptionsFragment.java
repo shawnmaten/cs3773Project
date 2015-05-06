@@ -1,4 +1,4 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Calendar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.marsdayjam.eventplanner.R;
+
 import static android.view.View.OnClickListener;
 
 public class CalendarOptionsFragment extends Fragment {
-    private static final String ADD_FRAGMENT = "addFragment";
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final CalendarFragment calendarFragment = (CalendarFragment) getParentFragment();
@@ -20,16 +20,16 @@ public class CalendarOptionsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getChildFragmentManager().beginTransaction()
-                        .add(new AddCalendarEventFragment(), ADD_FRAGMENT)
+                        .add(new AddCalendarEventFragment(), null)
                         .commit();
             }
         });
         root.findViewById (R.id.view_events).setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),
-                        String.format("# Events: %d", calendarFragment.getEvents().size()),
-                        Toast.LENGTH_SHORT).show();
+                getChildFragmentManager().beginTransaction()
+                        .add(new ViewCalendarEventsFragment(), null)
+                        .commit();
             }
         });
         return root;

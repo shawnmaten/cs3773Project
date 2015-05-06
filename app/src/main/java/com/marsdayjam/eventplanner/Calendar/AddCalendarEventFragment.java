@@ -1,8 +1,9 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Calendar;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,8 +11,13 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-import org.w3c.dom.Text;
+import com.marsdayjam.eventplanner.CalendarEvent;
+import com.marsdayjam.eventplanner.DBController;
+import com.marsdayjam.eventplanner.DatePickerFragment;
+import com.marsdayjam.eventplanner.R;
+import com.marsdayjam.eventplanner.TimePickerFragment;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -34,7 +40,7 @@ public class AddCalendarEventFragment extends DialogFragment {
         parent = ((CalendarFragment) getParentFragment().getParentFragment());
 
         final DateFormat dfDate = DateFormat.getDateInstance();
-        DateFormat dfTime = DateFormat.getTimeInstance(DateFormat.SHORT);
+        final DateFormat dfTime = DateFormat.getTimeInstance(DateFormat.SHORT);
 
         if (parent.getSelectedDate() != null) {
             start = new Date(parent.getSelectedDate().getTime());
@@ -70,6 +76,23 @@ public class AddCalendarEventFragment extends DialogFragment {
             }
         });
 
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getChildFragmentManager().beginTransaction().add(
+                        new TimePickerFragment(new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                start.setHours(i);
+                                start.setMinutes(i1);
+                                startTime.setText(dfTime.format(start));
+                            }
+                        }),
+                        null
+                ).commit();
+            }
+        });
+
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +104,23 @@ public class AddCalendarEventFragment extends DialogFragment {
                                 end.setMonth(i1);
                                 end.setDate(i2);
                                 endDate.setText(dfDate.format(start));
+                            }
+                        }),
+                        null
+                ).commit();
+            }
+        });
+
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getChildFragmentManager().beginTransaction().add(
+                        new TimePickerFragment(new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                end.setHours(i);
+                                end.setMinutes(i1);
+                                endTime.setText(dfTime.format(end));
                             }
                         }),
                         null
@@ -109,6 +149,8 @@ public class AddCalendarEventFragment extends DialogFragment {
                         else
                             event.setEvent(dbController.getEvent(parent.getTypeId()));
                         dbController.insertCalendarEvent(event);
+                        parent.clearCalendar();
+                        parent.setCalendar();
                     }
                 })
                 .create();

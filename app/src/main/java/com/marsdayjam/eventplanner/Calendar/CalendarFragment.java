@@ -1,15 +1,17 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Calendar;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.marsdayjam.eventplanner.CalendarEvent;
+import com.marsdayjam.eventplanner.DBController;
+import com.marsdayjam.eventplanner.MainActivity;
+import com.marsdayjam.eventplanner.R;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CalendarFragment extends MainActivity.PlaceholderFragment{
+public class CalendarFragment extends MainActivity.PlaceholderFragment {
     private static final String CALENDAR_FRAGMENT = "calendarFragment";
     private static final String ARG_TYPE = "type";
     private static final String ARG_ID = "id";
@@ -25,7 +27,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
     public static final int EVENT_TYPE = 1;
 
     private Date selectedDate;
-    private ArrayList<CalendarEvent> events;
+    private ArrayList<CalendarEvent> events = new ArrayList<>();
     CaldroidFragment caldroidFragment;
 
     // TODO review these
@@ -33,7 +35,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
     private static Date prevDate;
     static Context context;
     private AddCalendarEventFragment addCalEvent;
-    private EditCalendarEventsFragment editCalEvent;
+    private ViewCalendarEventsFragment editCalEvent;
 
     public static CalendarFragment newInstance(int sectionNumber, int type, long id, Context context) {
         CalendarFragment fragment = new CalendarFragment();
@@ -60,20 +62,12 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Bundle fragmentArgs = new Bundle();
         Calendar cal = Calendar.getInstance();
         FragmentManager cfm = getChildFragmentManager();
         FragmentTransaction ft = cfm.beginTransaction();
-        DBController dbController = DBController.getInstance(getActivity());
-        Bundle calendarArgs = getArguments();
+        Bundle calendarArgs = new Bundle();;
 
         super.onCreate(savedInstanceState);
-
-        fragmentArgs = getArguments();
-        if (fragmentArgs.getInt(ARG_TYPE) == EMPLOYEE_TYPE)
-            events = dbController.getEmployee(calendarArgs.getLong(ARG_ID)).getCalendarEvents();
-        else
-            events = dbController.getEvent(calendarArgs.getLong(ARG_ID)).getCalendarEvents();
 
         if (savedInstanceState == null) {
             caldroidFragment = new CaldroidFragment();
@@ -89,10 +83,8 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
             caldroidFragment = (CaldroidFragment) cfm.findFragmentByTag(CALENDAR_FRAGMENT);
         }
 
-        for (CalendarEvent event : events) {
-            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getStart());
-            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getEnd());
-        }
+        clearCalendar();
+        setCalendar();
 
         caldroidFragment.setCaldroidListener(new CaldroidListener() {
 
@@ -100,6 +92,7 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
             public void onSelectDate(Date date, View view) {
                 if (selectedDate != null)
                     caldroidFragment.clearBackgroundResourceForDate(selectedDate);
+                setCalendar();
                 selectedDate = date;
                 caldroidFragment.setBackgroundResourceForDate(R.color.orange, date);
                 caldroidFragment.refreshView();
@@ -133,6 +126,30 @@ public class CalendarFragment extends MainActivity.PlaceholderFragment{
 
     public long getTypeId() {
         return getArguments().getLong(ARG_ID);
+    }
+
+    public void clearCalendar() {
+        for (CalendarEvent event : events) {
+            caldroidFragment.clearBackgroundResourceForDate(event.getStart());
+            caldroidFragment.clearBackgroundResourceForDate(event.getEnd());
+        }
+        caldroidFragment.refreshView();
+    }
+
+    public void setCalendar() {
+        DBController dbController = DBController.getInstance(getActivity());
+        Bundle args = getArguments();
+
+        if (args.getInt(ARG_TYPE) == EMPLOYEE_TYPE)
+            events = dbController.getEmployee(args.getLong(ARG_ID)).getCalendarEvents();
+        else
+            events = dbController.getEvent(args.getLong(ARG_ID)).getCalendarEvents();
+
+        for (CalendarEvent event : events) {
+            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getStart());
+            caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.getEnd());
+        }
+        caldroidFragment.refreshView();
     }
 
 }
