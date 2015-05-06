@@ -10,7 +10,7 @@ public class Employee {
     private String password;
     private String first;
     private String last;
-    private int roleCode;
+    private long roleCode;
     private String roleTitle;
     private ArrayList<CalendarEvent> calendarEvents = new ArrayList<>();
 
@@ -54,11 +54,11 @@ public class Employee {
         this.last = last;
     }
 
-    public int getRoleCode() {
+    public long getRoleCode() {
         return roleCode;
     }
 
-    public void setRoleCode(int roleCode) {
+    public void setRoleCode(long roleCode) {
         this.roleCode = roleCode;
     }
 

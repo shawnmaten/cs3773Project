@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Event Planner</string>
 
-    <string name="title_section1">Actions</string>
+    <string name="title_section1">Welcome</string>
     <string name="title_section2">Calendar</string>
-    <string name="title_section3">Events</string>
+    <string name="title_section3">Actions</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,8 +12,8 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="employee">employee</string>
-    <string name="role">role</string>
+    <string name="employee">Employee</string>
+    <string name="role">Role</string>
 
     <string name="add_event">Add Event</string>
     <string name="view_events">View Events</string>
@@ -23,6 +23,17 @@
     <string name="start">Start</string>
     <string name="end">End</string>
 
+    <string name="create_employee">Create Employee</string>
+
+    <string name="untitled">(untitled)</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="first">First</string>
+    <string name="last">Last</string>
+
+    <string name="edit_add">Edit / Add</string>
+    <string name="delete">Delete</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

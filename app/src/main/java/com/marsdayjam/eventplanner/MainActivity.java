@@ -26,9 +26,6 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     private static final int LOG_IN_REQUEST = 0;
 
-    private String EMPLOYEE_FRAGMENT = "employeeFragment";
-    private String CALENDAR_FRAGMENT = "calendarFragment";
-
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -72,23 +69,6 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    /*
-    private void setupFragments() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Employee user = LoginActivity.getUser();
-        Fragment fragment;
-
-        fragment = EmployeeFragment.newInstance(1, user.getId());
-        ft.add(R.id.container, fragment, EMPLOYEE_FRAGMENT);
-        fragment = CalendarFragment.newInstance(1, CalendarFragment.EMPLOYEE_TYPE, user.getId());
-        ft.add(R.id.container, fragment, CALENDAR_FRAGMENT);
-
-        ft.commit();
-        fm.executePendingTransactions();
-    }
-    */
-
     @Override
         public void onNavigationDrawerItemSelected(int position) {
         Context context = getApplicationContext();
@@ -96,24 +76,29 @@ public class MainActivity extends ActionBarActivity
         FragmentTransaction ft = fm.beginTransaction();
         Fragment fragment;
         Employee user = LoginActivity.getUser();
-        EventFragment eventFragment = new EventFragment(context);
 
         if (user != null) {
             switch (position) {
                 case 0:
-                    fragment = EmployeeFragment.newInstance(position+1, user.getId());
-                    ft.replace(R.id.container, fragment, EMPLOYEE_FRAGMENT);
+                    fragment = EmployeeFragment.newInstance(1, user.getId());
+                    ft.replace(R.id.container, fragment);
                     break;
                 case 1:
-                    fragment = CalendarFragment.newInstance(position + 1,
-                            CalendarFragment.EMPLOYEE_TYPE, user.getId(), context);
-                    ft.replace(R.id.container, fragment, CALENDAR_FRAGMENT);
+                    fragment = CalendarFragment.newInstance(2, CalendarFragment.EMPLOYEE_TYPE,
+                            user.getId(), context);
+                    ft.replace(R.id.container, fragment);
+                    break;
+                case 2:
+                    if (user.getRoleCode() == DBContract.RolesTable.HR) {
+                        fragment = HRFragment.newInstance(3);
+                    } else {
+                        fragment = new EventFragment(context);
+                    }
                     break;
                 default:
-                    ft.replace(R.id.container, eventFragment);
-                    break;
+                    fragment = PlaceholderFragment.newInstance(-1);
             }
-            ft.commit();
+            ft.replace(R.id.container, fragment).commit();
         }
     }
 
@@ -128,6 +113,8 @@ public class MainActivity extends ActionBarActivity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+            default:
+                mTitle = getString(R.string.untitled);
         }
     }
 

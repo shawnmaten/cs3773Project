@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
 
 import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
 import com.marsdayjam.eventplanner.DBContract.RolesTable;
@@ -65,9 +66,8 @@ public class DBController {
     }
 
     //Get all employees
-    public List<Employee> getAllEmployees(){
-        List<Employee> employeeList;
-        employeeList = new ArrayList<>();      //Select All Query
+    public ArrayList<Employee> getAllEmployees(){
+        ArrayList<Employee> employeeList = new ArrayList<>();      //Select All Query
         String selectQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -75,11 +75,18 @@ public class DBController {
         if(cursor.moveToFirst()){
             do {
                 Employee employee = new Employee();
-                employee.setId(Integer.parseInt(cursor.getString(0)));
-                employee.setEmail(cursor.getString(1));
-                employee.setFirst(cursor.getString(2));
-                employee.setLast(cursor.getString(3));
-                employee.setCalendarEvents(getCalendarEvents(employee));
+                employee.setId(cursor.getLong(cursor.getColumnIndexOrThrow(EmployeeTable._ID)));
+                employee.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(
+                        EmployeeTable.COLUMN_NAME_EMAIL)));
+                employee.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(
+                        EmployeeTable.COLUMN_NAME_PASSWORD)));
+                employee.setFirst(cursor.getString(cursor.getColumnIndexOrThrow(
+                        EmployeeTable.COLUMN_NAME_FIRST)));
+                employee.setLast(cursor.getString(cursor.getColumnIndexOrThrow(
+                        EmployeeTable.COLUMN_NAME_LAST)));
+                employee.setRoleCode(cursor.getInt(cursor.getColumnIndexOrThrow(
+                        EmployeeTable.COLUMN_NAME_ROLE)));
+                employee.setRoleTitle(getRoleDescription(employee.getRoleCode()));
                 //Adding employee to list
                 employeeList.add(employee);
             } while (cursor.moveToNext());
@@ -106,7 +113,7 @@ public class DBController {
         values.put(EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
         values.put(EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
         values.put(EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
-        values.put(EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleTitle());
+        values.put(EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleCode());
 
         //updating row
         id =  db.update(EmployeeTable.TABLE_NAME,
@@ -143,7 +150,7 @@ public class DBController {
         );
 
         if (cursor.moveToFirst()) {
-            int id = cursor.getInt(
+            long id = cursor.getLong(
                     cursor.getColumnIndexOrThrow(EmployeeTable._ID)
             );
             String email = cursor.getString(
@@ -199,10 +206,10 @@ public class DBController {
     }
 
     // Get the word description of an employee role
-    public String getRoleDescription(int roleCode) {
+    public String getRoleDescription(long roleCode) {
         String selection = RolesTable._ID + "=?";
         String selectionArgs[] = {
-                Integer.toString(roleCode)
+                Long.toString(roleCode)
         };
         String[] projection = {
                 RolesTable._ID,
@@ -226,6 +233,23 @@ public class DBController {
 
         cursor.close();
         return title;
+    }
+
+    // Get list of roles.
+    public ArrayList<String> getRoles() {
+        ArrayList<String> roles = new ArrayList<>();      //Select All Query
+        String selectQuery = "SELECT * FROM " + RolesTable.TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all rows and adding to list
+        if(cursor.moveToFirst()){
+            do {
+                roles.add(cursor.getString(cursor.getColumnIndex(RolesTable.COLUMN_NAME_TITLE)));
+            } while (cursor.moveToNext());
+        }
+        //return employee list
+        cursor.close();
+        return roles;
     }
 
     // Everything after this is from Juan

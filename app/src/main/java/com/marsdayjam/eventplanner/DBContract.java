@@ -19,6 +19,9 @@ public final class DBContract {
         public static final String TABLE_NAME = "roles";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_EDIT_EMPLOYEES = "edit_employees";
+        public static final int HR = 1;
+        public static final int MG = 2;
+        public static final int GE = 3;
     }
 
     // Everything after this is from Juan
