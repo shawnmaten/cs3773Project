@@ -1,4 +1,4 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Employee;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.marsdayjam.eventplanner.DB.DBController;
+import com.marsdayjam.eventplanner.R;
 
 import java.util.ArrayList;
 

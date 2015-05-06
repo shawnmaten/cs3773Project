@@ -8,8 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.marsdayjam.eventplanner.CalendarEvent;
-import com.marsdayjam.eventplanner.DBController;
+import com.marsdayjam.eventplanner.DB.DBController;
 import com.marsdayjam.eventplanner.MainActivity;
 import com.marsdayjam.eventplanner.R;
 import com.roomorama.caldroid.CaldroidFragment;

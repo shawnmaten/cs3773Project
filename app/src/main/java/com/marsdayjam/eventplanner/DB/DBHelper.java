@@ -1,20 +1,17 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
-import com.marsdayjam.eventplanner.DBContract.RolesTable;
-import com.marsdayjam.eventplanner.DBContract.CalendarTable;
-import com.marsdayjam.eventplanner.DBContract.EventTable;
-import com.marsdayjam.eventplanner.DBContract.EventMembersTable;
-import com.marsdayjam.eventplanner.DBContract.TeamTable;
-import com.marsdayjam.eventplanner.DBContract.TeamMembersTable;
-
-import java.text.DateFormat;
-import java.text.ParseException;
+import com.marsdayjam.eventplanner.DB.DBContract.EmployeeTable;
+import com.marsdayjam.eventplanner.DB.DBContract.RolesTable;
+import com.marsdayjam.eventplanner.DB.DBContract.CalendarTable;
+import com.marsdayjam.eventplanner.DB.DBContract.EventTable;
+import com.marsdayjam.eventplanner.DB.DBContract.EventMembersTable;
+import com.marsdayjam.eventplanner.DB.DBContract.TeamTable;
+import com.marsdayjam.eventplanner.DB.DBContract.TeamMembersTable;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String TEXT_TYPE = " TEXT ";

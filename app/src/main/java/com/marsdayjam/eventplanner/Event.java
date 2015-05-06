@@ -1,5 +1,8 @@
 package com.marsdayjam.eventplanner;
 
+import com.marsdayjam.eventplanner.Calendar.CalendarEvent;
+import com.marsdayjam.eventplanner.Employee.Employee;
+
 import java.util.ArrayList;
 import java.util.Date;
 

@@ -1,5 +1,7 @@
 package com.marsdayjam.eventplanner;
 
+import com.marsdayjam.eventplanner.Employee.Employee;
+
 import java.util.ArrayList;
 
 public class Team {

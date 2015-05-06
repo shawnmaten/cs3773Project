@@ -13,8 +13,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.marsdayjam.eventplanner.CalendarEvent;
-import com.marsdayjam.eventplanner.DBController;
+import com.marsdayjam.eventplanner.DB.DBController;
 import com.marsdayjam.eventplanner.DatePickerFragment;
 import com.marsdayjam.eventplanner.R;
 import com.marsdayjam.eventplanner.TimePickerFragment;

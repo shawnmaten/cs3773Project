@@ -1,4 +1,4 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.DB;
 
 import android.provider.BaseColumns;
 

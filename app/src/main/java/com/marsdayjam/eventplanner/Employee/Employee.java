@@ -1,6 +1,6 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Employee;
 
-import android.os.Parcel;
+import com.marsdayjam.eventplanner.Calendar.CalendarEvent;
 
 import java.util.ArrayList;
 

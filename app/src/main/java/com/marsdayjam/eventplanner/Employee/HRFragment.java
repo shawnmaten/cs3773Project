@@ -1,8 +1,7 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Employee;
 
 import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.marsdayjam.eventplanner.DB.DBController;
+import com.marsdayjam.eventplanner.MainActivity;
+import com.marsdayjam.eventplanner.R;
 
 import java.util.ArrayList;
 

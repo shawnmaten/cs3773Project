@@ -3,8 +3,12 @@ package com.marsdayjam.eventplanner;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
+import com.marsdayjam.eventplanner.Calendar.CalendarEvent;
+import com.marsdayjam.eventplanner.DB.DBContract;
+import com.marsdayjam.eventplanner.DB.DBController;
+import com.marsdayjam.eventplanner.Employee.Employee;
+
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.List;
 
 public final class DBControllerTest extends AndroidTestCase {

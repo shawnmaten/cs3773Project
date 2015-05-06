@@ -17,10 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.marsdayjam.eventplanner.Calendar.CalendarFragment;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
+import com.marsdayjam.eventplanner.DB.DBContract;
+import com.marsdayjam.eventplanner.Employee.Employee;
+import com.marsdayjam.eventplanner.Employee.EmployeeFragment;
+import com.marsdayjam.eventplanner.Employee.HRFragment;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {

@@ -1,4 +1,4 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.Employee;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.marsdayjam.eventplanner.DB.DBController;
+import com.marsdayjam.eventplanner.MainActivity;
+import com.marsdayjam.eventplanner.R;
 
 public class EmployeeFragment extends MainActivity.PlaceholderFragment {
     private static final String ARG_EMPLOYEE_ID = "employeeId";

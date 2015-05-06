@@ -1,23 +1,17 @@
-package com.marsdayjam.eventplanner;
+package com.marsdayjam.eventplanner.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.SparseArray;
 
-import com.marsdayjam.eventplanner.DBContract.EmployeeTable;
-import com.marsdayjam.eventplanner.DBContract.RolesTable;
-import com.marsdayjam.eventplanner.DBContract.EventTable;
-import com.marsdayjam.eventplanner.DBContract.EventMembersTable;
-import com.marsdayjam.eventplanner.DBContract.TeamTable;
-import com.marsdayjam.eventplanner.DBContract.TeamMembersTable;
-import com.marsdayjam.eventplanner.DBContract.CalendarTable;
+import com.marsdayjam.eventplanner.Calendar.CalendarEvent;
+import com.marsdayjam.eventplanner.Employee.Employee;
+import com.marsdayjam.eventplanner.Event;
+import com.marsdayjam.eventplanner.Team;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DBController {
     private static DBController ourInstance;
@@ -45,12 +39,12 @@ public class DBController {
     /*THIS IS TO ADD EMPLOYEES TO THE DATABASE*/
     public long insertEmployee(Employee employee) {
         ContentValues values = new ContentValues();
-        values.put(EmployeeTable.COLUMN_NAME_EMAIL, employee.getEmail());
-        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
-        values.put(EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
-        values.put(EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
-        values.put(EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleCode());
-        employee.setId(db.insert(EmployeeTable.TABLE_NAME, null, values));
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_EMAIL, employee.getEmail());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleCode());
+        employee.setId(db.insert(DBContract.EmployeeTable.TABLE_NAME, null, values));
         for (CalendarEvent calendarEvent : employee.getCalendarEvents())
             insertCalendarEvent(calendarEvent);
         return employee.getId();
@@ -58,34 +52,34 @@ public class DBController {
 
     /*THIS IS TO DELETE EMPLOYEES TO THE DATABASE*/
     public void deleteEmployee(Employee employee){
-        String selection = EmployeeTable._ID + "=?";
+        String selection = DBContract.EmployeeTable._ID + "=?";
         String[] selectionArgs = { String.valueOf(employee.getId()) };
         for (CalendarEvent calendarEvent : employee.getCalendarEvents())
             deleteCalendarEvent(calendarEvent);
-        db.delete(EmployeeTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.EmployeeTable.TABLE_NAME, selection, selectionArgs);
     }
 
     //Get all employees
     public ArrayList<Employee> getAllEmployees(){
         ArrayList<Employee> employeeList = new ArrayList<>();      //Select All Query
-        String selectQuery = "SELECT * FROM " + EmployeeTable.TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + DBContract.EmployeeTable.TABLE_NAME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         //looping through all rows and adding to list
         if(cursor.moveToFirst()){
             do {
                 Employee employee = new Employee();
-                employee.setId(cursor.getLong(cursor.getColumnIndexOrThrow(EmployeeTable._ID)));
+                employee.setId(cursor.getLong(cursor.getColumnIndexOrThrow(DBContract.EmployeeTable._ID)));
                 employee.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(
-                        EmployeeTable.COLUMN_NAME_EMAIL)));
+                        DBContract.EmployeeTable.COLUMN_NAME_EMAIL)));
                 employee.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(
-                        EmployeeTable.COLUMN_NAME_PASSWORD)));
+                        DBContract.EmployeeTable.COLUMN_NAME_PASSWORD)));
                 employee.setFirst(cursor.getString(cursor.getColumnIndexOrThrow(
-                        EmployeeTable.COLUMN_NAME_FIRST)));
+                        DBContract.EmployeeTable.COLUMN_NAME_FIRST)));
                 employee.setLast(cursor.getString(cursor.getColumnIndexOrThrow(
-                        EmployeeTable.COLUMN_NAME_LAST)));
+                        DBContract.EmployeeTable.COLUMN_NAME_LAST)));
                 employee.setRoleCode(cursor.getInt(cursor.getColumnIndexOrThrow(
-                        EmployeeTable.COLUMN_NAME_ROLE)));
+                        DBContract.EmployeeTable.COLUMN_NAME_ROLE)));
                 employee.setRoleTitle(getRoleDescription(employee.getRoleCode()));
                 //Adding employee to list
                 employeeList.add(employee);
@@ -98,7 +92,7 @@ public class DBController {
 
     //Getting total employee count
     public long getEmployeeCount(){
-        String countQuery = "SELECT  * FROM " + EmployeeTable.TABLE_NAME;
+        String countQuery = "SELECT  * FROM " + DBContract.EmployeeTable.TABLE_NAME;
         Cursor cursor = db.rawQuery(countQuery, null);
         int cnt = cursor.getCount();
         cursor.close();
@@ -109,16 +103,16 @@ public class DBController {
     public long updateEmployee(Employee employee){
         long id;
         ContentValues values = new ContentValues();
-        values.put(EmployeeTable.COLUMN_NAME_EMAIL, employee.getEmail());
-        values.put(EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
-        values.put(EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
-        values.put(EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
-        values.put(EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleCode());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_EMAIL, employee.getEmail());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_FIRST, employee.getFirst());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_LAST, employee.getLast());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_PASSWORD, employee.getPassword());
+        values.put(DBContract.EmployeeTable.COLUMN_NAME_ROLE, employee.getRoleCode());
 
         //updating row
-        id =  db.update(EmployeeTable.TABLE_NAME,
+        id =  db.update(DBContract.EmployeeTable.TABLE_NAME,
                 values,
-                EmployeeTable._ID + " = ?",
+                DBContract.EmployeeTable._ID + " = ?",
                 new String[]{String.valueOf(employee.getId())});
         
         return id;
@@ -130,17 +124,17 @@ public class DBController {
         Employee employee;
 
         String[] projection = {
-                EmployeeTable._ID,
-                EmployeeTable.COLUMN_NAME_EMAIL,
-                EmployeeTable.COLUMN_NAME_PASSWORD,
-                EmployeeTable.COLUMN_NAME_FIRST,
-                EmployeeTable.COLUMN_NAME_LAST,
-                EmployeeTable.COLUMN_NAME_ROLE
+                DBContract.EmployeeTable._ID,
+                DBContract.EmployeeTable.COLUMN_NAME_EMAIL,
+                DBContract.EmployeeTable.COLUMN_NAME_PASSWORD,
+                DBContract.EmployeeTable.COLUMN_NAME_FIRST,
+                DBContract.EmployeeTable.COLUMN_NAME_LAST,
+                DBContract.EmployeeTable.COLUMN_NAME_ROLE
         };
-        String sortOrder = EmployeeTable._ID + " DESC";
+        String sortOrder = DBContract.EmployeeTable._ID + " DESC";
 
         cursor = db.query(
-                EmployeeTable.TABLE_NAME,
+                DBContract.EmployeeTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -151,22 +145,22 @@ public class DBController {
 
         if (cursor.moveToFirst()) {
             long id = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(EmployeeTable._ID)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable._ID)
             );
             String email = cursor.getString(
-                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_EMAIL)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable.COLUMN_NAME_EMAIL)
             );
             String password = cursor.getString(
-                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_PASSWORD)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable.COLUMN_NAME_PASSWORD)
             );
             String first = cursor.getString(
-                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_FIRST)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable.COLUMN_NAME_FIRST)
             );
             String last = cursor.getString(
-                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_LAST)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable.COLUMN_NAME_LAST)
             );
             int roleCode = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(EmployeeTable.COLUMN_NAME_ROLE)
+                    cursor.getColumnIndexOrThrow(DBContract.EmployeeTable.COLUMN_NAME_ROLE)
             );
             cursor.close();
 
@@ -189,7 +183,7 @@ public class DBController {
 
     // Get a single employee by their email, used for login
     public Employee getEmployee(String email) {
-        String selection = EmployeeTable.COLUMN_NAME_EMAIL + "=?";
+        String selection = DBContract.EmployeeTable.COLUMN_NAME_EMAIL + "=?";
         String selectionArgs[] = {
                 email
         };
@@ -198,7 +192,7 @@ public class DBController {
 
     // Get a single employee by their id
     public Employee getEmployee(long id) {
-        String selection = EmployeeTable._ID + "=?";
+        String selection = DBContract.EmployeeTable._ID + "=?";
         String selectionArgs[] = {
                 Long.toString(id)
         };
@@ -207,17 +201,17 @@ public class DBController {
 
     // Get the word description of an employee role
     public String getRoleDescription(long roleCode) {
-        String selection = RolesTable._ID + "=?";
+        String selection = DBContract.RolesTable._ID + "=?";
         String selectionArgs[] = {
                 Long.toString(roleCode)
         };
         String[] projection = {
-                RolesTable._ID,
-                RolesTable.COLUMN_NAME_TITLE
+                DBContract.RolesTable._ID,
+                DBContract.RolesTable.COLUMN_NAME_TITLE
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                RolesTable.TABLE_NAME,
+                DBContract.RolesTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -228,7 +222,7 @@ public class DBController {
         String title = "";
 
         if (cursor.moveToFirst()) {
-            title = cursor.getString(cursor.getColumnIndexOrThrow(RolesTable.COLUMN_NAME_TITLE));
+            title = cursor.getString(cursor.getColumnIndexOrThrow(DBContract.RolesTable.COLUMN_NAME_TITLE));
         }
 
         cursor.close();
@@ -238,13 +232,13 @@ public class DBController {
     // Get list of roles.
     public ArrayList<String> getRoles() {
         ArrayList<String> roles = new ArrayList<>();      //Select All Query
-        String selectQuery = "SELECT * FROM " + RolesTable.TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + DBContract.RolesTable.TABLE_NAME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         //looping through all rows and adding to list
         if(cursor.moveToFirst()){
             do {
-                roles.add(cursor.getString(cursor.getColumnIndex(RolesTable.COLUMN_NAME_TITLE)));
+                roles.add(cursor.getString(cursor.getColumnIndex(DBContract.RolesTable.COLUMN_NAME_TITLE)));
             } while (cursor.moveToNext());
         }
         //return employee list
@@ -257,13 +251,13 @@ public class DBController {
     // Inserts an Event.
     public long insertEvent(Event event) {
         ContentValues values = new ContentValues();
-        values.put(EventTable.COLUMN_NAME_EVENT_NAME, event.getName());
-        values.put(EventTable.COLUMN_NAME_HOST, event.getHost());
-        values.put(EventTable.COLUMN_NAME_LOCATION, event.getLocation());
-        values.put(EventTable.COLUMN_NAME_START, event.getStart().getTime());
-        values.put(EventTable.COLUMN_NAME_END, event.getEnd().getTime());
-        values.put(EventTable.COLUMN_NAME_MANAGER_ID, event.getManager().getId());
-        event.setId(db.insert(EventTable.TABLE_NAME, null, values));
+        values.put(DBContract.EventTable.COLUMN_NAME_EVENT_NAME, event.getName());
+        values.put(DBContract.EventTable.COLUMN_NAME_HOST, event.getHost());
+        values.put(DBContract.EventTable.COLUMN_NAME_LOCATION, event.getLocation());
+        values.put(DBContract.EventTable.COLUMN_NAME_START, event.getStart().getTime());
+        values.put(DBContract.EventTable.COLUMN_NAME_END, event.getEnd().getTime());
+        values.put(DBContract.EventTable.COLUMN_NAME_MANAGER_ID, event.getManager().getId());
+        event.setId(db.insert(DBContract.EventTable.TABLE_NAME, null, values));
         for (CalendarEvent calendarEvent : event.getCalendarEvents())
             insertCalendarEvent(calendarEvent);
         return event.getId();
@@ -271,31 +265,31 @@ public class DBController {
 
     // Delete an Event based on its id.
     public void deleteEvent(Event event){
-        String selection = EventTable._ID + " LIKE ?";
+        String selection = DBContract.EventTable._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(event.getId()) };
         for (CalendarEvent calendarEvent : event.getCalendarEvents())
             deleteCalendarEvent(calendarEvent);
-        db.delete(EventTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.EventTable.TABLE_NAME, selection, selectionArgs);
     }
 
     // Gets an Event based on its id.
     public Event getEvent(long id) {
-        String selection = EventTable._ID + "=?";
+        String selection = DBContract.EventTable._ID + "=?";
         String selectionArgs[] = {
                 Long.toString(id)
         };
         String[] projection = {
-                EventTable._ID,
-                EventTable.COLUMN_NAME_EVENT_NAME,
-                EventTable.COLUMN_NAME_HOST,
-                EventTable.COLUMN_NAME_LOCATION,
-                EventTable.COLUMN_NAME_START,
-                EventTable.COLUMN_NAME_END,
-                EventTable.COLUMN_NAME_MANAGER_ID
+                DBContract.EventTable._ID,
+                DBContract.EventTable.COLUMN_NAME_EVENT_NAME,
+                DBContract.EventTable.COLUMN_NAME_HOST,
+                DBContract.EventTable.COLUMN_NAME_LOCATION,
+                DBContract.EventTable.COLUMN_NAME_START,
+                DBContract.EventTable.COLUMN_NAME_END,
+                DBContract.EventTable.COLUMN_NAME_MANAGER_ID
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                EventTable.TABLE_NAME,
+                DBContract.EventTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -306,19 +300,19 @@ public class DBController {
         Event event = null;
         if(cursor.moveToFirst()){
             event = new Event();
-            event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(EventTable._ID)));
+            event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.EventTable._ID)));
             event.setName(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_EVENT_NAME)));
+                    DBContract.EventTable.COLUMN_NAME_EVENT_NAME)));
             event.setHost(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_HOST)));
+                    DBContract.EventTable.COLUMN_NAME_HOST)));
             event.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_LOCATION)));
+                    DBContract.EventTable.COLUMN_NAME_LOCATION)));
             event.setStart(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_START))));
+                    DBContract.EventTable.COLUMN_NAME_START))));
             event.setEnd(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_END))));
+                    DBContract.EventTable.COLUMN_NAME_END))));
             event.setManager(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_MANAGER_ID))));
+                    DBContract.EventTable.COLUMN_NAME_MANAGER_ID))));
         }
         cursor.close();
         return event;
@@ -326,22 +320,22 @@ public class DBController {
 
     // Gets all Events for a manager.
     public ArrayList<Event> getEvents(Employee manager) {
-        String selection = EventTable.COLUMN_NAME_MANAGER_ID + "=?";
+        String selection = DBContract.EventTable.COLUMN_NAME_MANAGER_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(manager.getId())
         };
         String[] projection = {
-                EventTable._ID,
-                EventTable.COLUMN_NAME_EVENT_NAME,
-                EventTable.COLUMN_NAME_HOST,
-                EventTable.COLUMN_NAME_LOCATION,
-                EventTable.COLUMN_NAME_START,
-                EventTable.COLUMN_NAME_END,
-                EventTable.COLUMN_NAME_MANAGER_ID
+                DBContract.EventTable._ID,
+                DBContract.EventTable.COLUMN_NAME_EVENT_NAME,
+                DBContract.EventTable.COLUMN_NAME_HOST,
+                DBContract.EventTable.COLUMN_NAME_LOCATION,
+                DBContract.EventTable.COLUMN_NAME_START,
+                DBContract.EventTable.COLUMN_NAME_END,
+                DBContract.EventTable.COLUMN_NAME_MANAGER_ID
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                EventTable.TABLE_NAME,
+                DBContract.EventTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -352,19 +346,19 @@ public class DBController {
         ArrayList<Event> events = new ArrayList<>();
         if(cursor.moveToFirst()){
             Event event = new Event();
-            event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(EventTable._ID)));
+            event.setId(cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.EventTable._ID)));
             event.setName(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_EVENT_NAME)));
+                    DBContract.EventTable.COLUMN_NAME_EVENT_NAME)));
             event.setHost(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_HOST)));
+                    DBContract.EventTable.COLUMN_NAME_HOST)));
             event.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_LOCATION)));
+                    DBContract.EventTable.COLUMN_NAME_LOCATION)));
             event.setStart(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_START))));
+                    DBContract.EventTable.COLUMN_NAME_START))));
             event.setEnd(new Date(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_END))));
+                    DBContract.EventTable.COLUMN_NAME_END))));
             event.setManager(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    EventTable.COLUMN_NAME_MANAGER_ID))));
+                    DBContract.EventTable.COLUMN_NAME_MANAGER_ID))));
             event.setCalendarEvents(getCalendarEvents(event));
             events.add(event);
         }
@@ -376,39 +370,39 @@ public class DBController {
     public long insertEventMember(Event event, Employee employee) {
         long id;
         ContentValues values = new ContentValues();
-        values.put(EventMembersTable.COLUMN_NAME_EVENT_ID, event.getId());
-        values.put(EventMembersTable.COLUMN_NAME_EMPLOYEE_ID, employee.getId());
-        id = db.insert(EventMembersTable.TABLE_NAME, null, values);
+        values.put(DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID, event.getId());
+        values.put(DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID, employee.getId());
+        id = db.insert(DBContract.EventMembersTable.TABLE_NAME, null, values);
         getEventMembers(event);
         return id;
     }
 
     // Deletes an an Employee from a team.
     public void deleteEventMember(Event event, Employee employee){
-        String selection = EventMembersTable.COLUMN_NAME_EVENT_ID + "=?" + " AND " +
-                EventMembersTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
+        String selection = DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID + "=?" + " AND " +
+                DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
         String[] selectionArgs = {
                 String.valueOf(event.getId()),
                 String.valueOf(employee.getId())
         };
-        db.delete(EventMembersTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.EventMembersTable.TABLE_NAME, selection, selectionArgs);
         event.setMembers(getEventMembers(event));
     }
 
     // Gets a list of Employees that our on a Team by the Team's id.
     public ArrayList<Employee> getEventMembers(Event event) {
-        String selection = EventMembersTable.COLUMN_NAME_EVENT_ID + "=?";
+        String selection = DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(event.getId())
         };
         String[] projection = {
-                EventMembersTable._ID,
-                EventMembersTable.COLUMN_NAME_EVENT_ID,
-                EventMembersTable.COLUMN_NAME_EMPLOYEE_ID
+                DBContract.EventMembersTable._ID,
+                DBContract.EventMembersTable.COLUMN_NAME_EVENT_ID,
+                DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                EventMembersTable.TABLE_NAME,
+                DBContract.EventMembersTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -419,7 +413,7 @@ public class DBController {
         ArrayList<Employee> members = new ArrayList<>();
         while (cursor.moveToNext()) {
             long employeeId = cursor.getLong(cursor.getColumnIndexOrThrow(
-                    EventMembersTable.COLUMN_NAME_EMPLOYEE_ID));
+                    DBContract.EventMembersTable.COLUMN_NAME_EMPLOYEE_ID));
             members.add(getEmployee(employeeId));
         }
         cursor.close();
@@ -430,11 +424,11 @@ public class DBController {
     // Inserts an Event.
     public long insertTeam(Team team) {
         ContentValues values = new ContentValues();
-        values.put(TeamTable.COLUMN_NAME_EVENT_ID, team.getEvent().getId());
-        values.put(TeamTable.COLUMN_NAME_SUPERVISOR_ID, team.getSupervisor().getId());
-        values.put(TeamTable.COLUMN_NAME_TEAM_NAME, team.getName());
-        values.put(TeamTable.COLUMN_NAME_DUTIES, team.getDuties());
-        team.setId(db.insert(TeamTable.TABLE_NAME, null, values));
+        values.put(DBContract.TeamTable.COLUMN_NAME_EVENT_ID, team.getEvent().getId());
+        values.put(DBContract.TeamTable.COLUMN_NAME_SUPERVISOR_ID, team.getSupervisor().getId());
+        values.put(DBContract.TeamTable.COLUMN_NAME_TEAM_NAME, team.getName());
+        values.put(DBContract.TeamTable.COLUMN_NAME_DUTIES, team.getDuties());
+        team.setId(db.insert(DBContract.TeamTable.TABLE_NAME, null, values));
         for (Employee member : team.getMembers())
             insertTeamMember(team, member);
         return team.getId();
@@ -442,29 +436,29 @@ public class DBController {
 
     // Delete an Event based on its id.
     public void deleteTeam(Team team){
-        String selection = TeamTable._ID + " LIKE ?";
+        String selection = DBContract.TeamTable._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(team.getId()) };
         for (Employee member : team.getMembers())
             deleteTeamMember(team, member);
-        db.delete(TeamTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.TeamTable.TABLE_NAME, selection, selectionArgs);
     }
 
     // Gets an Event based on its id.
     public Team getTeam(long id) {
-        String selection = TeamTable._ID + "=?";
+        String selection = DBContract.TeamTable._ID + "=?";
         String selectionArgs[] = {
                 Long.toString(id)
         };
         String[] projection = {
-                TeamTable._ID,
-                TeamTable.COLUMN_NAME_EVENT_ID,
-                TeamTable.COLUMN_NAME_SUPERVISOR_ID,
-                TeamTable.COLUMN_NAME_TEAM_NAME,
-                TeamTable.COLUMN_NAME_DUTIES,
+                DBContract.TeamTable._ID,
+                DBContract.TeamTable.COLUMN_NAME_EVENT_ID,
+                DBContract.TeamTable.COLUMN_NAME_SUPERVISOR_ID,
+                DBContract.TeamTable.COLUMN_NAME_TEAM_NAME,
+                DBContract.TeamTable.COLUMN_NAME_DUTIES,
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                TeamTable.TABLE_NAME,
+                DBContract.TeamTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -475,15 +469,15 @@ public class DBController {
         Team team = null;
         if(cursor.moveToFirst()){
             team = new Team();
-            team.setId(cursor.getInt(cursor.getColumnIndexOrThrow(TeamTable._ID)));
+            team.setId(cursor.getInt(cursor.getColumnIndexOrThrow(DBContract.TeamTable._ID)));
             team.setEvent(getEvent(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    TeamTable.COLUMN_NAME_EVENT_ID))));
+                    DBContract.TeamTable.COLUMN_NAME_EVENT_ID))));
             team.setSupervisor(getEmployee(cursor.getInt(cursor.getColumnIndexOrThrow(
-                    TeamTable.COLUMN_NAME_SUPERVISOR_ID))));
+                    DBContract.TeamTable.COLUMN_NAME_SUPERVISOR_ID))));
             team.setName(cursor.getString(cursor.getColumnIndexOrThrow(
-                    TeamTable.COLUMN_NAME_TEAM_NAME)));
+                    DBContract.TeamTable.COLUMN_NAME_TEAM_NAME)));
             team.setDuties(cursor.getString(cursor.getColumnIndexOrThrow(
-                    TeamTable.COLUMN_NAME_DUTIES)));
+                    DBContract.TeamTable.COLUMN_NAME_DUTIES)));
             getTeamMembers(team);
         }
         cursor.close();
@@ -494,39 +488,39 @@ public class DBController {
     public long insertTeamMember(Team team, Employee employee) {
         long id;
         ContentValues values = new ContentValues();
-        values.put(TeamMembersTable.COLUMN_NAME_TEAM_ID, team.getId());
-        values.put(TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID, employee.getId());
-        id =  db.insert(TeamMembersTable.TABLE_NAME, null, values);
+        values.put(DBContract.TeamMembersTable.COLUMN_NAME_TEAM_ID, team.getId());
+        values.put(DBContract.TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID, employee.getId());
+        id =  db.insert(DBContract.TeamMembersTable.TABLE_NAME, null, values);
         getTeamMembers(team);
         return id;
     }
 
     // Deletes an an Employee from a team.
     public void deleteTeamMember(Team team, Employee employee){
-        String selection = TeamMembersTable.COLUMN_NAME_TEAM_ID + "=?" + " AND " +
-                TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
+        String selection = DBContract.TeamMembersTable.COLUMN_NAME_TEAM_ID + "=?" + " AND " +
+                DBContract.TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
         String[] selectionArgs = {
                 String.valueOf(team.getId()),
                 String.valueOf(employee.getId())
         };
-        db.delete(TeamMembersTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.TeamMembersTable.TABLE_NAME, selection, selectionArgs);
         team.setMembers(getTeamMembers(team));
     }
 
     // Gets a list of Employees that our on a Team by the Team's id.
     public ArrayList<Employee> getTeamMembers(Team team) {
-        String selection = TeamMembersTable.COLUMN_NAME_TEAM_ID + "=?";
+        String selection = DBContract.TeamMembersTable.COLUMN_NAME_TEAM_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(team.getId())
         };
         String[] projection = {
-                TeamMembersTable._ID,
-                TeamMembersTable.COLUMN_NAME_TEAM_ID,
-                TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID
+                DBContract.TeamMembersTable._ID,
+                DBContract.TeamMembersTable.COLUMN_NAME_TEAM_ID,
+                DBContract.TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                TeamMembersTable.TABLE_NAME,
+                DBContract.TeamMembersTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -537,7 +531,7 @@ public class DBController {
         ArrayList<Employee> members = new ArrayList<>();
         while (cursor.moveToNext()) {
             long employeeId = cursor.getLong(cursor.getColumnIndexOrThrow(
-                    TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID));
+                    DBContract.TeamMembersTable.COLUMN_NAME_EMPLOYEE_ID));
             members.add(getEmployee(employeeId));
         }
         cursor.close();
@@ -548,14 +542,14 @@ public class DBController {
     // Insert an individual CalendarEvent.
     public long insertCalendarEvent(CalendarEvent calendarEvent) {
         ContentValues values = new ContentValues();
-        values.put(CalendarTable.COLUMN_NAME_DESCRIPTION, calendarEvent.getDescription());
-        values.put(CalendarTable.COLUMN_NAME_START, calendarEvent.getStart().getTime());
-        values.put(CalendarTable.COLUMN_NAME_END, calendarEvent.getEnd().getTime());
+        values.put(DBContract.CalendarTable.COLUMN_NAME_DESCRIPTION, calendarEvent.getDescription());
+        values.put(DBContract.CalendarTable.COLUMN_NAME_START, calendarEvent.getStart().getTime());
+        values.put(DBContract.CalendarTable.COLUMN_NAME_END, calendarEvent.getEnd().getTime());
         if (calendarEvent.getEmployee() != null)
-            values.put(CalendarTable.COLUMN_NAME_EMPLOYEE_ID, calendarEvent.getEmployee().getId());
+            values.put(DBContract.CalendarTable.COLUMN_NAME_EMPLOYEE_ID, calendarEvent.getEmployee().getId());
         else
-            values.put(CalendarTable.COLUMN_NAME_EVENT_ID, calendarEvent.getEvent().getId());
-        calendarEvent.setId(db.insert(CalendarTable.TABLE_NAME, null, values));
+            values.put(DBContract.CalendarTable.COLUMN_NAME_EVENT_ID, calendarEvent.getEvent().getId());
+        calendarEvent.setId(db.insert(DBContract.CalendarTable.TABLE_NAME, null, values));
         if (calendarEvent.getEmployee() != null)
             calendarEvent.getEmployee().setCalendarEvents(getCalendarEvents(
                     calendarEvent.getEmployee()));
@@ -567,9 +561,9 @@ public class DBController {
 
     // Delete an individual CalendarEvent.
     public void deleteCalendarEvent(CalendarEvent calendarEvent){
-        String selection = CalendarTable._ID + "=?";
+        String selection = DBContract.CalendarTable._ID + "=?";
         String[] selectionArgs = { String.valueOf(calendarEvent.getId()) };
-        db.delete(CalendarTable.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.CalendarTable.TABLE_NAME, selection, selectionArgs);
         if (calendarEvent.getEmployee() != null)
             calendarEvent.getEmployee().setCalendarEvents(getCalendarEvents(
                     calendarEvent.getEmployee()));
@@ -580,7 +574,7 @@ public class DBController {
 
     // Get all CalendarEvents for an Employee.
     public ArrayList<CalendarEvent> getCalendarEvents(Employee employee) {
-        String selection = CalendarTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
+        String selection = DBContract.CalendarTable.COLUMN_NAME_EMPLOYEE_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(employee.getId())
         };
@@ -591,7 +585,7 @@ public class DBController {
 
     // Get all CalendarEvents for an Event.
     public ArrayList<CalendarEvent> getCalendarEvents(Event event) {
-        String selection = CalendarTable.COLUMN_NAME_EVENT_ID + "=?";
+        String selection = DBContract.CalendarTable.COLUMN_NAME_EVENT_ID + "=?";
         String selectionArgs[] = {
                 Long.toString(event.getId())
         };
@@ -603,15 +597,15 @@ public class DBController {
     // Helper for getting CalendarEvents.
     public ArrayList<CalendarEvent> getCalendarEventsHelper(String selection, String selectionArgs[]) {
         String[] projection = {
-                CalendarTable._ID,
-                CalendarTable.COLUMN_NAME_DESCRIPTION,
-                CalendarTable.COLUMN_NAME_START,
-                CalendarTable.COLUMN_NAME_END
+                DBContract.CalendarTable._ID,
+                DBContract.CalendarTable.COLUMN_NAME_DESCRIPTION,
+                DBContract.CalendarTable.COLUMN_NAME_START,
+                DBContract.CalendarTable.COLUMN_NAME_END
 
         };
-        String sortOrder = RolesTable._ID + " DESC";
+        String sortOrder = DBContract.RolesTable._ID + " DESC";
         Cursor cursor = db.query(
-                CalendarTable.TABLE_NAME,
+                DBContract.CalendarTable.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -623,11 +617,11 @@ public class DBController {
         while (cursor.moveToNext()) {
             CalendarEvent calendarEvent = new CalendarEvent();
             calendarEvent.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(
-                    CalendarTable.COLUMN_NAME_DESCRIPTION)));
+                    DBContract.CalendarTable.COLUMN_NAME_DESCRIPTION)));
             calendarEvent.setStart(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
-                    CalendarTable.COLUMN_NAME_START))));
+                    DBContract.CalendarTable.COLUMN_NAME_START))));
             calendarEvent.setEnd(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(
-                    CalendarTable.COLUMN_NAME_END))));
+                    DBContract.CalendarTable.COLUMN_NAME_END))));
             calendarEvents.add(calendarEvent);
         }
         cursor.close();
